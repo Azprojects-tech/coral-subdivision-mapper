@@ -1,0 +1,12 @@
+﻿{
+  "name": "coral-estate-mapper",
+  "version": "1.0.0",
+  "description": "Professional Subdivision Mapping Application for Coral Estate",
+  "main": "index.html",
+  "scripts": {
+    "start": "serve ."
+  },
+  "keywords": ["real-estate", "mapping", "subdivision", "coral-estate"],
+  "author": "Jeff Realty / AZProjects Tech",
+  "license": "MIT"
+}

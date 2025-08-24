@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coral Estate Subdivision Mapper</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+        iframe {
+            width: 100%;
+            height: 100vh;
+            border: none;
+        }
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: Arial, sans-serif;
+            color: #333;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div class="loading" id="loading">Loading Coral Estate Mapper...</div>
+    <iframe 
+        src="https://azprojects-tech.github.io/coral-subdivision-mapper/" 
+        onload="document.getElementById('loading').style.display='none'"
+        title="Coral Estate Subdivision Mapper">
+    </iframe>
+</body>
+</html>
