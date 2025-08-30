@@ -1,0 +1,14 @@
+{
+"type": "FeatureCollection",
+"name": "Locations",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "id": null, "Labels": "Civil Defense Estate" }, "geometry": { "type": "Point", "coordinates": [ 7.561622605358441, 6.597827049498076 ] } },
+{ "type": "Feature", "properties": { "id": null, "Labels": "Pilgrimage Centre" }, "geometry": { "type": "Point", "coordinates": [ 7.570356758222593, 6.601503984073124 ] } },
+{ "type": "Feature", "properties": { "id": null, "Labels": "Timber Market Ugwuogo" }, "geometry": { "type": "Point", "coordinates": [ 7.556860489794349, 6.602536101151153 ] } },
+{ "type": "Feature", "properties": { "id": null, "Labels": "Nationa Housing Estate" }, "geometry": { "type": "Point", "coordinates": [ 7.553624415808748, 6.601880277007075 ] } },
+{ "type": "Feature", "properties": { "id": null, "Labels": "Seaman Global Estate" }, "geometry": { "type": "Point", "coordinates": [ 7.533688468379058, 6.600891163539954 ] } },
+{ "type": "Feature", "properties": { "id": null, "Labels": "Breeze Garden Estate" }, "geometry": { "type": "Point", "coordinates": [ 7.529207750552842, 6.597160467792579 ] } },
+{ "type": "Feature", "properties": { "id": null, "Labels": "Behold Gardens Estate" }, "geometry": { "type": "Point", "coordinates": [ 7.523287575067476, 6.59936448452741 ] } }
+]
+}

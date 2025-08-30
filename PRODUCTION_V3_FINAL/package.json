@@ -1,0 +1,25 @@
+{
+  "name": "coral-gardens-estate",
+  "version": "2.0.0",
+  "description": "Interactive subdivision mapper for Coral Gardens Estate",
+  "main": "index.html",
+  "scripts": {
+    "start": "serve .",
+    "build": "echo 'Static site - no build required'"
+  },
+  "keywords": [
+    "real-estate",
+    "subdivision",
+    "interactive-map",
+    "leaflet",
+    "nigeria",
+    "property"
+  ],
+  "author": "A&Z Projects Ltd",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/azprojects-tech/coral-subdivision-mapper"
+  },
+  "homepage": "https://azprojects-tech.github.io/coral-subdivision-mapper/"
+}

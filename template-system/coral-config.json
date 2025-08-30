@@ -1,0 +1,24 @@
+﻿{
+  "site_config": {
+    "SITE_TITLE": "CORAL GARDENS ESTATE",
+    "PRICE_DISPLAY": "3,000,000",
+    "DEFAULT_LAT": 6.5964,
+    "DEFAULT_LNG": 7.5307,
+    "DEFAULT_ZOOM": 18,
+    "BRAND_PRIMARY_COLOR": "#2c5f3f",
+    "BRAND_SECONDARY_COLOR": "#1a3d2e",
+    "AVAILABLE_COLOR": "#28a745",
+    "SOLD_COLOR": "#dc3545",
+    "RESERVED_COLOR": "#ffc107",
+    "PARCEL_ID_FIELD": "Text",
+    "PARCEL_STATUS_FIELD": "status"
+  },
+  "data_files": {
+    "subdivision_geojson": "data/coral-subdivision.geojson",
+    "context_geojson": "data/coral-context.geojson"
+  },
+  "output": {
+    "filename": "coral-gardens.html",
+    "title": "Coral Gardens Estate Interactive Map"
+  }
+}

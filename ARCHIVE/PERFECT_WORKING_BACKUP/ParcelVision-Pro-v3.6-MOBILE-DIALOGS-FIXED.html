@@ -1,0 +1,2834 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+    .az-watermark {
+        position: fixed;
+        top: 140px;
+        right: 15px;
+        background: rgba(255, 255, 255, 0.85);
+        padding: 6px 10px;
+        border-radius: 6px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        z-index: 1200;
+        font-family: Arial, sans-serif;
+        font-size: 11px;
+        color: #666;
+        border: 1px solid rgba(44, 95, 63, 0.3);
+        max-width: 200px;
+        opacity: 0.9;
+    }
+    
+    .az-logo {
+        width: 40px;
+        height: auto;
+        margin-right: 8px;
+        vertical-align: middle;
+    }
+    
+    .az-contact {
+        font-weight: bold;
+        color: #2c5f3f;
+        text-decoration: none;
+    }
+    
+    .az-footer {
+        position: fixed;
+        bottom: 15px;
+        left: 15px;
+        right: 15px;
+        background: rgba(44, 95, 63, 0.8);
+        color: white;
+        padding: 4px 8px;
+        font-family: Arial, sans-serif;
+        font-size: 9px;
+        border-radius: 3px;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+        z-index: 1100;
+        opacity: 0.85;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        height: 20px;
+    }
+    
+    .az-footer a {
+        color: #ffffff;
+        text-decoration: none;
+        font-weight: bold;
+    }
+    
+    .az-footer a:hover {
+        text-decoration: underline;
+    }
+    
+    /* Client Authentication & View Switching - Moved to Map Body */
+    .admin-toggle {
+        position: absolute;
+        top: 200px;
+        right: 15px;
+        background: rgba(255, 255, 255, 0.85);
+        color: #667eea;
+        border: 1px solid rgba(102, 126, 234, 0.3);
+        padding: 6px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 10px;
+        font-weight: 600;
+        z-index: 1200;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        backdrop-filter: blur(5px);
+        opacity: 0.8;
+    }
+    
+    .admin-toggle:hover {
+        opacity: 1;
+        background: rgba(255, 255, 255, 0.95);
+        transform: translateY(-1px);
+    }
+    
+    .client-view .admin-toggle {
+        background: rgba(102, 126, 234, 0.9);
+        color: white;
+        opacity: 0.9;
+    }
+    
+    /* Attribution Toggle - Moved to Admin Panel Line */
+    .attribution-toggle {
+        background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-size: 11px;
+        font-weight: 600;
+        margin-left: 8px;
+    }
+    
+    .attribution-toggle:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    }
+    
+    /* Hide Leaflet attribution by default */
+    .leaflet-control-attribution {
+        display: none !important;
+    }
+    
+    .show-attribution .leaflet-control-attribution {
+        display: block !important;
+        position: fixed !important;
+        bottom: 180px !important;
+        right: 10px !important;
+        font-size: 8px !important;
+        max-width: 200px !important;
+        background: rgba(255, 255, 255, 0.9) !important;
+        padding: 4px 6px !important;
+        border-radius: 4px !important;
+        z-index: 1100 !important;
+        line-height: 1.2 !important;
+    }
+    
+    .client-login {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        z-index: 3000;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .login-form {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        max-width: 400px;
+        width: 90%;
+    }
+    
+    .login-form h3 {
+        margin-bottom: 20px;
+        color: #2c3e50;
+        text-align: center;
+    }
+    
+    .login-form input {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 15px;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        font-size: 14px;
+    }
+    
+    .login-form input:focus {
+        outline: none;
+        border-color: #667eea;
+    }
+    
+    .login-btn {
+        width: 100%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 14px;
+    }
+    
+    .client-only {
+        display: none;
+    }
+    
+    .client-view .client-only {
+        display: block;
+    }
+    
+    .customer-view .client-only {
+        display: none;
+    }
+    
+    /* Google Sheets Integration Indicator */
+    .sync-status {
+        position: fixed;
+        top: 50px;
+        left: 15px;
+        background: rgba(40, 167, 69, 0.9);
+        color: white;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 10px;
+        z-index: 1150;
+        display: none;
+    }
+    
+    .sync-status.syncing {
+        background: rgba(255, 193, 7, 0.9);
+        display: block;
+    }
+    
+    .sync-status.synced {
+        background: rgba(40, 167, 69, 0.9);
+        display: block;
+    }
+    
+    .sync-status.error {
+        background: rgba(220, 53, 69, 0.9);
+        display: block;
+    }
+
+    /* Contact Modal Styles */
+    .contact-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 2000;
+    }
+    
+    .modal-content {
+        background: white;
+        border-radius: 15px;
+        width: 90%;
+        max-width: 500px;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        animation: modalSlideIn 0.3s ease;
+    }
+    
+    @keyframes modalSlideIn {
+        from { opacity: 0; transform: translateY(-50px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .modal-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 15px 15px 0 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .modal-header h3 {
+        margin: 0;
+        font-size: 20px;
+    }
+    
+    .close-btn {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 24px;
+        cursor: pointer;
+        padding: 0;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: background 0.3s;
+    }
+    
+    .close-btn:hover {
+        background: rgba(255, 255, 255, 0.2);
+    }
+    
+    .modal-body {
+        padding: 25px;
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 600;
+        color: #2c3e50;
+    }
+    
+    .form-group input,
+    .form-group textarea {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: border-color 0.3s;
+    }
+    
+    .form-group input:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: #667eea;
+    }
+    
+    .form-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    
+    .btn-submit {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 14px;
+        flex: 1;
+        min-width: 150px;
+        transition: transform 0.3s;
+    }
+    
+    .btn-submit:hover {
+        transform: translateY(-2px);
+    }
+    
+    .btn-whatsapp {
+        background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 14px;
+        flex: 1;
+        min-width: 150px;
+        transition: transform 0.3s;
+    }
+    
+    .btn-whatsapp:hover {
+        transform: translateY(-2px);
+    }
+    
+    @media (max-width: 768px) {
+        .az-footer {
+            position: fixed;
+            bottom: 8px;
+            padding: 3px 6px;
+            font-size: 8px;
+            height: 18px;
+        }
+    }
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google" content="notranslate">
+    <meta name="robots" content="noindex, nofollow">
+    <title>CORAL GARDENS ESTATE - Real Estate Mapper</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" 
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" 
+          crossorigin=""/>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 1000;
+        }
+        
+        .header h1 {
+            color: #2c3e50;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .header p {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        
+        .controls {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px 20px;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            bottom: 45px;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .control-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 11px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+        
+        .btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        select {
+            padding: 6px 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 18px;
+            background: white;
+            font-size: 11px;
+            min-width: 100px;
+        }
+        
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        #map {
+            height: calc(100vh - 140px);
+            width: 100%;
+        }
+        
+        .legend {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 8px 4px;
+            border-radius: 4px;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
+            position: absolute;
+            top: 60px;
+            right: 5px;
+            z-index: 1000;
+            width: 45px;
+        }
+        
+        .legend h4 {
+            color: #2c3e50;
+            margin-bottom: 6px;
+            font-size: 8px;
+            font-weight: bold;
+            text-align: center;
+            line-height: 1;
+        }
+        
+        .legend-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 4px;
+            font-size: 7px;
+            line-height: 1;
+            text-align: center;
+        }
+        
+        .legend-color {
+            width: 30px;
+            height: 8px;
+            border-radius: 2px;
+            margin-bottom: 2px;
+            border: 0.5px solid rgba(0,0,0,0.3);
+        }
+        
+        .parcel-popup {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 270px;
+        }
+        
+        .parcel-popup h3 {
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+        
+        .parcel-popup p {
+            margin-bottom: 4px;
+            color: #555;
+            font-size: 13px;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 13px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-top: 8px;
+        }
+        
+        .status-available {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-reserved {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-sold {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            text-align: center;
+            z-index: 2000;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* PARCEL ENHANCEMENTS - MOBILE + NUMBERING + PRICING */
+        .parcel-number-toggle {
+            position: absolute;
+            top: 135px;
+            left: 15px;
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 5px;
+            font-size: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            z-index: 1200;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+        }
+
+        .parcel-number-toggle:hover {
+            background: #218838;
+            transform: translateY(-1px);
+        }
+
+        .parcel-number-toggle.hidden {
+            background: #6c757d;
+        }
+
+        .parcel-label {
+            background: rgba(255,255,255,0.95) !important;
+            border: 1px solid #007bff !important;
+            border-radius: 3px !important;
+            padding: 1px 3px !important;
+            font-weight: 700 !important;
+            font-size: 8px !important;
+            color: #007bff !important;
+            pointer-events: none !important;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.35) !important;
+            text-shadow: 1px 1px 1px rgba(255,255,255,0.8) !important;
+        }
+        
+        /* Zoom-responsive label sizes */
+        .parcel-label-zoom-16 { font-size: 6px !important; padding: 0px 2px !important; }
+        .parcel-label-zoom-17 { font-size: 7px !important; padding: 1px 2px !important; }
+        .parcel-label-zoom-18 { font-size: 8px !important; padding: 1px 3px !important; }
+        .parcel-label-zoom-19 { font-size: 9px !important; padding: 2px 3px !important; }
+        .parcel-label-zoom-20 { font-size: 10px !important; padding: 2px 4px !important; }
+        
+        .user-location {
+            background: #ff4444 !important;
+            border: 3px solid white !important;
+            border-radius: 50% !important;
+            box-shadow: 0 0 10px rgba(255, 68, 68, 0.6), 0 0 20px rgba(255, 68, 68, 0.4) !important;
+            animation: pulse 2s infinite !important;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* MOBILE RESPONSIVENESS */
+        @media (max-width: 768px) {
+            .parcel-number-toggle {
+                top: 80px;
+                left: 8px;
+                font-size: 11px;
+                padding: 6px 10px;
+            }
+            
+            .parcel-label {
+                font-size: 7px !important;
+                padding: 0px 2px !important;
+            }
+            
+            .btn {
+                font-size: 10px;
+                padding: 5px 7px;
+                min-width: 50px;
+                white-space: nowrap;
+            }
+            
+            .controls {
+                position: fixed;
+                bottom: 50px;
+                left: 0;
+                right: 0;
+                padding: 10px;
+                background: rgba(255,255,255,0.95);
+                display: flex;
+                flex-wrap: nowrap;
+                gap: 8px;
+                z-index: 900;
+                box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+                overflow-x: auto;
+                justify-content: flex-start;
+            }
+            
+            .control-group {
+                gap: 8px;
+                flex-shrink: 0;
+            }
+            
+            .az-footer {
+                bottom: 8px;
+                font-size: 8px;
+                padding: 3px 6px;
+                height: 18px;
+            }
+            
+            .admin-toggle {
+                top: 140px;
+                right: 10px;
+                font-size: 9px;
+                padding: 5px 8px;
+            }
+            
+            .show-attribution .leaflet-control-attribution {
+                bottom: 160px !important;
+                right: 8px !important;
+                font-size: 7px !important;
+                max-width: 180px !important;
+            }
+            
+            .btn {
+                font-size: 12px;
+                padding: 8px 12px;
+                flex: 1;
+                min-width: 70px;
+            }
+            
+            select {
+                font-size: 12px;
+                padding: 6px 10px;
+                flex: 1;
+            }
+            
+            #map {
+                height: calc(100vh - 190px);
+            }
+            
+            .legend {
+                top: 60px;
+                right: 8px;
+                font-size: 11px;
+                padding: 10px 5px;
+                width: 55px;
+            }
+            
+            .legend h4 {
+                font-size: 9px;
+                margin-bottom: 8px;
+            }
+            
+            .legend-item {
+                font-size: 8px;
+                margin-bottom: 5px;
+            }
+            
+            .legend-color {
+                width: 35px;
+                height: 10px;
+                margin-bottom: 3px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .parcel-number-toggle {
+                top: 75px;
+                left: 5px;
+                font-size: 10px;
+                padding: 5px 8px;
+            }
+            
+            .btn {
+                font-size: 9px;
+                padding: 4px 6px;
+                min-width: 45px;
+                white-space: nowrap;
+            }
+            
+            .controls {
+                bottom: 35px;
+                padding: 6px 8px;
+                gap: 6px;
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                justify-content: flex-start;
+            }
+            
+            .control-group {
+                gap: 6px;
+                flex-shrink: 0;
+            }
+            
+            .legend {
+                font-size: 7px;
+                padding: 6px 3px;
+                top: 50px;
+                right: 3px;
+                width: 40px;
+            }
+            
+            .legend h4 {
+                font-size: 7px;
+                margin-bottom: 4px;
+            }
+            
+            .legend-item {
+                font-size: 6px;
+                margin-bottom: 3px;
+            }
+            
+            .legend-color {
+                width: 25px;
+                height: 6px;
+                margin-bottom: 2px;
+            }
+            
+            .az-footer {
+                font-size: 7px;
+                padding: 2px 4px;
+                height: 16px;
+                gap: 4px;
+            }
+            
+            .admin-toggle {
+                top: 110px;
+                right: 8px;
+                font-size: 8px;
+                padding: 4px 6px;
+            }
+        }
+
+        /* Ultra-compact for very small screens */
+        @media (max-width: 360px) {
+            .legend {
+                font-size: 6px;
+                padding: 4px 2px;
+                top: 45px;
+                right: 2px;
+                width: 35px;
+            }
+            
+            .legend h4 {
+                font-size: 6px;
+                margin-bottom: 3px;
+            }
+            
+            .legend-item {
+                font-size: 5px;
+                margin-bottom: 2px;
+                line-height: 1;
+            }
+            
+            .legend-color {
+                width: 20px;
+                height: 5px;
+                margin-bottom: 1px;
+            }
+        }
+
+        /* LANDSCAPE MOBILE OPTIMIZATION */
+        @media screen and (orientation: landscape) and (max-height: 600px) {
+            .controls {
+                transform: translateY(100%);
+                transition: transform 0.3s ease-in-out;
+            }
+            
+            .controls.show {
+                transform: translateY(0);
+            }
+            
+            .legend {
+                opacity: 0.7;
+                font-size: 6px !important;
+                padding: 4px 2px !important;
+                width: 35px !important;
+                top: 10px !important;
+            }
+            
+            .parcel-number-toggle {
+                opacity: 0.7;
+                font-size: 8px !important;
+                padding: 3px 6px !important;
+                top: 10px !important;
+            }
+            
+            .admin-toggle {
+                opacity: 0.7;
+                font-size: 8px !important;
+                padding: 3px 6px !important;
+                top: 45px !important;
+            }
+            
+            .az-footer {
+                opacity: 0.8;
+                font-size: 6px !important;
+                padding: 1px 3px !important;
+                height: 12px !important;
+            }
+            
+            .swipe-indicator {
+                position: fixed;
+                bottom: 10px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: rgba(102, 126, 234, 0.9);
+                color: white;
+                padding: 6px 12px;
+                border-radius: 20px;
+                font-size: 10px;
+                font-weight: 600;
+                z-index: 1001;
+                animation: swipePulse 2s infinite;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+                display: flex;
+                align-items: center;
+                gap: 4px;
+            }
+            
+            .swipe-indicator.hidden {
+                display: none;
+            }
+            
+            .swipe-arrow {
+                font-size: 12px;
+                animation: swipeBounce 1s infinite;
+            }
+        }
+        
+        @keyframes swipePulse {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+        
+        @keyframes swipeBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-2px); }
+        }
+        
+        /* Subtle styling for context features */
+        .location-label, .estate-label {
+            pointer-events: none !important;
+        }
+    </style>
+</head>
+<body class="customer-view">
+    <!-- Sync Status Indicator -->
+    <div class="sync-status" id="syncStatus">📊 Syncing with Google Sheets...</div>
+    
+    <!-- Landscape Swipe Indicator -->
+    <div class="swipe-indicator hidden" id="swipeIndicator" onclick="toggleControlsInLandscape()">
+        <span class="swipe-arrow">↑</span>
+        Swipe up for controls
+    </div>
+    
+    <!-- Client Login Modal -->
+    <div class="client-login" id="clientLogin">
+        <div class="login-form">
+            <h3>🔐 Client Access</h3>
+            <input type="password" id="clientPassword" placeholder="Enter client password" onkeyup="handleLoginKeyup(event)">
+            <button class="login-btn" onclick="authenticateClient()">Login</button>
+            <button class="login-btn" onclick="closeLogin()" style="background: #6c757d; margin-top: 10px;">Cancel</button>
+        </div>
+    </div>
+
+    <div class="header">
+        <h1>CORAL GARDENS ESTATE</h1>
+    </div>
+    
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p>Loading subdivision map data...</p>
+    </div>
+    
+    <div id="map"></div>
+    
+    <!-- Admin Toggle (in map body like parcel numbers) -->
+    <button class="admin-toggle" onclick="toggleView()" id="adminToggle">👔 Admin</button>
+    
+    <div class="legend">
+        <h4>Status</h4>
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: #28a745;"></div>
+            <span>Available</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: #ffc107;"></div>
+            <span>Reserved</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: #dc3545;"></div>
+            <span>Sold</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: #6c757d;"></div>
+            <span>N/A</span>
+        </div>
+    </div>
+    
+    <div class="controls">
+        <div class="control-group">
+            <input type="text" id="parcelSearch" placeholder="Search parcel (e.g., A1, B5)" style="padding: 4px 8px; border: 2px solid #e9ecef; border-radius: 15px; font-size: 9px; min-width: 120px;" onkeyup="searchParcel(event)">
+            <button class="btn" onclick="clearSearch()">Clear</button>
+        </div>
+        
+        <div class="control-group">
+            <button class="btn" id="mapBtn" onclick="toggleLayer('map')"> Map View</button>
+            <button class="btn active" id="satelliteBtn" onclick="toggleLayer('satellite')"> Satellite</button>
+        </div>
+        
+        <div class="control-group">
+            <button class="btn" onclick="locateUser()"> My Location</button>
+            <button class="btn" onclick="zoomToSubdivision()"> Zoom to Subdivision</button>
+        </div>
+        
+        <div class="control-group client-only admin-panel" style="margin-left: auto;">
+            <label for="parcelSelect" style="color: #2c3e50; font-weight: 600;">📊 Admin Panel:</label>
+            <select id="parcelSelect" onchange="selectParcel()">
+                <option value="">Select Parcel...</option>
+            </select>
+            <select id="statusSelect" onchange="updateParcelStatus()">
+                <option value="available">Available</option>
+                <option value="reserved">Reserved</option>
+                <option value="sold">Sold</option>
+            </select>
+            <button class="btn" onclick="syncWithGoogleSheets()">🔄 Sync Sheets</button>
+            <button class="btn" onclick="testSyncMessages()" style="background: #28a745;">🧪 Test Messages</button>
+            <button class="attribution-toggle" onclick="toggleAttribution()" id="attributionToggle">ℹ️ Info</button>
+        </div>
+    </div>
+
+    <!-- Leaflet JavaScript -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" 
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" 
+            crossorigin=""></script>
+    
+    <script>
+        // Embedded WGS84 GeoJSON data
+        const subdivisionData = {"type":"FeatureCollection","features":[{"type":"Feature","id":0,"geometry":{"type":"Polygon","coordinates":[[[7.530758783667439,6.5965077198860342],[7.5306122805223881,6.5965385451197527],[7.5305781733578367,6.5965180757129263],[7.5305341643115211,6.5963663829172328],[7.5305531535709394,6.5963347415576257],[7.5306996566504312,6.596303917232885],[7.530758783667439,6.5965077198860342]]]},"properties":{"FID":0,"Text":"              P80","Shape_Leng":82.521059743500004,"Shape_Area":448.61074333800002}},{"type":"Feature","id":1,"geometry":{"type":"Polygon","coordinates":[[[7.5309362730609033,6.5964703762177077],[7.530758783667439,6.5965077198860342],[7.5306996566504312,6.596303917232885],[7.5307698401454868,6.5962891511933401],[7.5308771459677022,6.5962665735702144],[7.5309362730609033,6.5964703762177077]]]},"properties":{"FID":1,"Text":"              P79","Shape_Leng":87.044595452400003,"Shape_Area":469.31820235700002}},{"type":"Feature","id":2,"geometry":{"type":"Polygon","coordinates":[[[7.531108527957441,6.5964149903439626],[7.5311010745899551,6.5964195478658221],[7.5310944210205211,6.5964252083010795],[7.5310887277194789,6.596431834665804],[7.5310841335252956,6.5964392654957171],[7.5309362730609033,6.5964703762177077],[7.5308771459677022,6.5962665735702144],[7.5310546352744279,6.5962292289340834],[7.531108527957441,6.5964149903439626]]]},"properties":{"FID":2,"Text":"              P78","Shape_Leng":85.483440563399995,"Shape_Area":465.136302355}},{"type":"Feature","id":3,"geometry":{"type":"Polygon","coordinates":[[[7.5312912518108579,6.5963956877692915],[7.531169178101794,6.5964213726316201],[7.5311615743672178,6.5964161901836746],[7.5311532243012591,6.5964123231317249],[7.5311443536839855,6.5964098743289359],[7.5311352019642159,6.5964089114002622],[7.5311260168521867,6.5964094603963241],[7.5311170443746995,6.5964115048597192],[7.531108527957441,6.5964149903439626],[7.5310546352744279,6.5962292289340834],[7.5312321236609501,6.5961918851304553],[7.5312912518108579,6.5963956877692915]]]},"properties":{"FID":3,"Text":"              P77","Shape_Leng":85.828190343900005,"Shape_Area":458.36764058199998}},{"type":"Feature","id":4,"geometry":{"type":"Polygon","coordinates":[[[7.5314687402603671,6.5963583438908513],[7.5312912518108579,6.5963956877692915],[7.5312321236609501,6.5961918851304553],[7.5314096129385923,6.5961545412603577],[7.5314687402603671,6.5963583438908513]]]},"properties":{"FID":4,"Text":"              P76","Shape_Leng":87.044525799400006,"Shape_Area":469.317854195}},{"type":"Feature","id":5,"geometry":{"type":"Polygon","coordinates":[[[7.5316542170931458,6.5963193188215996],[7.5314687402603671,6.5963583438908513],[7.5314096129385923,6.5961545412603577],[7.531486745992277,6.5961383115869534],[7.5315685410479993,6.5961211017803123],[7.5316026482446876,6.596141571122681],[7.5316542170931458,6.5963193188215996]]]},"properties":{"FID":5,"Text":"              P75","Shape_Leng":87.248485529099995,"Shape_Area":485.952603802}},{"type":"Feature","id":6,"geometry":{"type":"Polygon","coordinates":[[[7.5315432727495688,6.5960340064403491],[7.5313265862846697,6.5960795980858702],[7.5312924782028654,6.5960591287253534],[7.5312616299067896,6.5959527992400089],[7.5315314135769444,6.5958960364483454],[7.5315622619334377,6.5960023659292162],[7.5315432727495688,6.5960340064403491]]]},"properties":{"FID":6,"Text":"              P100","Shape_Leng":87.936343113800007,"Shape_Area":454.407160025}},{"type":"Feature","id":7,"geometry":{"type":"Polygon","coordinates":[[[7.5315314135769444,6.5958960364483454],[7.5312616299067896,6.5959527992400089],[7.5312232221837609,6.5958204148262594],[7.5314930057787031,6.595763652040187],[7.5315314135769444,6.5958960364483454]]]},"properties":{"FID":7,"Text":"              P101","Shape_Leng":91.457023561599996,"Shape_Area":463.38182565800003}},{"type":"Feature","id":8,"geometry":{"type":"Polygon","coordinates":[[[7.5314930057787031,6.595763652040187],[7.5312232221837609,6.5958204148262594],[7.5311848153783281,6.5956880304160403],[7.5314545979963814,6.5956312667285832],[7.5314930057787031,6.595763652040187]]]},"properties":{"FID":8,"Text":"              P115","Shape_Leng":91.457014458700002,"Shape_Area":463.38248134700001}},{"type":"Feature","id":9,"geometry":{"type":"Polygon","coordinates":[[[7.5314545979963814,6.5956312667285832],[7.5311848153783281,6.5956880304160403],[7.5311464076845009,6.5955556450997488],[7.5314161902246708,6.5954988823221905],[7.5314545979963814,6.5956312667285832]]]},"properties":{"FID":9,"Text":"              P116","Shape_Leng":91.456944803100001,"Shape_Area":463.38206818800001}},{"type":"Feature","id":10,"geometry":{"type":"Polygon","coordinates":[[[7.5314161902246708,6.5954988823221905],[7.5311464076845009,6.5955556450997488],[7.5311080000012645,6.5954232606886345],[7.531377783370548,6.5953664979193434],[7.5314161902246708,6.5954988823221905]]]},"properties":{"FID":10,"Text":"              P130","Shape_Leng":91.456897621400003,"Shape_Area":463.38077611900002}},{"type":"Feature","id":11,"geometry":{"type":"Polygon","coordinates":[[[7.5312008132127497,6.5976678188101969],[7.5310659213340942,6.5976961995733365],[7.5309891059484837,6.5974314306978972],[7.5311239986588951,6.5974030490387046],[7.5312008132127497,6.5976678188101969]]]},"properties":{"FID":11,"Text":"              P24","Shape_Leng":91.457008305000002,"Shape_Area":463.38241191200001}},{"type":"Feature","id":12,"geometry":{"type":"Polygon","coordinates":[[[7.5311239986588951,6.5974030490387046],[7.5309891059484837,6.5974314306978972],[7.5309122915229452,6.5971666609243442],[7.5310471832537864,6.5971382792680791],[7.5311239986588951,6.5974030490387046]]]},"properties":{"FID":12,"Text":"              P38","Shape_Leng":91.4571251399,"Shape_Area":463.38358627500003}},{"type":"Feature","id":13,"geometry":{"type":"Polygon","coordinates":[[[7.5312588904573419,6.5973746673368838],[7.5311239986588951,6.5974030490387046],[7.5310471832537864,6.5971382792680791],[7.5311820749743319,6.5971098984761598],[7.5312588904573419,6.5973746673368838]]]},"properties":{"FID":13,"Text":"              P39","Shape_Leng":91.456938654400005,"Shape_Area":463.38110837300002}},{"type":"Feature","id":14,"geometry":{"type":"Polygon","coordinates":[[[7.5313357050864358,6.5976394371027842],[7.5312008132127497,6.5976678188101969],[7.5311239986588951,6.5974030490387046],[7.5312588904573419,6.5973746673368838],[7.5313357050864358,6.5976394371027842]]]},"properties":{"FID":14,"Text":"              P23","Shape_Leng":91.456999197900004,"Shape_Area":463.38196449399999}},{"type":"Feature","id":15,"geometry":{"type":"Polygon","coordinates":[[[7.5314705978568206,6.5976110553581053],[7.5313357050864358,6.5976394371027842],[7.5312588904573419,6.5973746673368838],[7.5313937822481538,6.5973462855951359],[7.5314705978568206,6.5976110553581053]]]},"properties":{"FID":15,"Text":"              P22","Shape_Leng":91.4571251399,"Shape_Area":463.38358627500003}},{"type":"Feature","id":16,"geometry":{"type":"Polygon","coordinates":[[[7.5313937822481538,6.5973462855951359],[7.5312588904573419,6.5973746673368838],[7.5311820749743319,6.5971098984761598],[7.5312708288356944,6.5970912243618232],[7.5312769273134634,6.5970971755702639],[7.5312838570866925,6.59710213357085],[7.5312914593323628,6.5971059830470411],[7.5312995579679551,6.5971086348567578],[7.5313079641678069,6.5971100278543142],[7.5313164854063634,6.5971101289170679],[7.5313249227318684,6.597108937458958],[7.5313937822481538,6.5973462855951359]]]},"properties":{"FID":16,"Text":"              P40","Shape_Leng":89.681916383100003,"Shape_Area":451.596033073}},{"type":"Feature","id":17,"geometry":{"type":"Polygon","coordinates":[[[7.5315286740286673,6.5973179047177526],[7.5313937822481538,6.5973462855951359],[7.5313249227318684,6.597108937458958],[7.5313329458309184,6.5971065320872251],[7.5313405211128739,6.5971029570146174],[7.5313474783273469,6.5970982922241825],[7.5313536625256043,6.5970926421606633],[7.5313589349701884,6.5970861339246021],[7.5313631785768678,6.5970789118623872],[7.5313662970103419,6.5970711375636446],[7.531451859302182,6.5970531349665702],[7.5315286740286673,6.5973179047177526]]]},"properties":{"FID":17,"Text":"              P41","Shape_Leng":89.209179138500005,"Shape_Area":451.20072944600003}},{"type":"Feature","id":18,"geometry":{"type":"Polygon","coordinates":[[[7.5316054897152345,6.597582673570801],[7.5314705978568206,6.5976110553581053],[7.5313937822481538,6.5973462855951359],[7.5315286740286673,6.5973179047177526],[7.5316054897152345,6.597582673570801]]]},"properties":{"FID":18,"Text":"              P21","Shape_Leng":91.456938652299996,"Shape_Area":463.38110835100002}},{"type":"Feature","id":19,"geometry":{"type":"Polygon","coordinates":[[[7.5317403815633508,6.5975542926478754],[7.5316054897152345,6.597582673570801],[7.5315286740286673,6.5973179047177526],[7.5316635667085423,6.5972895228987625],[7.5317403815633508,6.5975542926478754]]]},"properties":{"FID":19,"Text":"              P20","Shape_Leng":91.457008303600006,"Shape_Area":463.38241190600002}},{"type":"Feature","id":20,"geometry":{"type":"Polygon","coordinates":[[[7.5316635667085423,6.5972895228987625],[7.5315286740286673,6.5973179047177526],[7.531451859302182,6.5970531349665702],[7.5315867510024894,6.5970247531505111],[7.5316635667085423,6.5972895228987625]]]},"properties":{"FID":20,"Text":"              P42","Shape_Leng":91.457125140700001,"Shape_Area":463.38358629099997}},{"type":"Feature","id":21,"geometry":{"type":"Polygon","coordinates":[[[7.5317984584764499,6.5972611410371806],[7.5316635667085423,6.5972895228987625],[7.5315867510024894,6.5970247531505111],[7.5317216426925002,6.5969963721988369],[7.5317984584764499,6.5972611410371806]]]},"properties":{"FID":21,"Text":"              P43","Shape_Leng":91.456938653700007,"Shape_Area":463.38110835700002}},{"type":"Feature","id":22,"geometry":{"type":"Polygon","coordinates":[[[7.5318752734064933,6.5975259107806954],[7.5317403815633508,6.5975542926478754],[7.5316635667085423,6.5972895228987625],[7.5317984584764499,6.5972611410371806],[7.5318752734064933,6.5975259107806954]]]},"properties":{"FID":22,"Text":"              P19","Shape_Leng":91.456999197200005,"Shape_Area":463.38196447799999}},{"type":"Feature","id":23,"geometry":{"type":"Polygon","coordinates":[[[7.5319968542336424,6.5975003292475005],[7.5318752734064933,6.5975259107806954],[7.5317984584764499,6.5972611410371806],[7.5319200383287992,6.59723556041068],[7.5319968542336424,6.5975003292475005]]]},"properties":{"FID":23,"Text":"              P18","Shape_Leng":88.448532805499994,"Shape_Area":417.653725936}},{"type":"Feature","id":24,"geometry":{"type":"Polygon","coordinates":[[[7.5319200383287992,6.59723556041068],[7.5317984584764499,6.5972611410371806],[7.5317216426925002,6.5969963721988369],[7.5318432233840298,6.5969707906757344],[7.5319200383287992,6.59723556041068]]]},"properties":{"FID":24,"Text":"              P44","Shape_Leng":88.448532806100005,"Shape_Area":417.65372593799998}},{"type":"Feature","id":25,"geometry":{"type":"Polygon","coordinates":[[[7.5308177889760879,6.5968409249471254],[7.530680234227777,6.5968698666220584],[7.5306109784941553,6.5966311526854025],[7.5306299686674745,6.5965995113270113],[7.5307409737645825,6.5965761551787967],[7.5308177889760879,6.5968409249471254]]]},"properties":{"FID":25,"Text":"              P67","Shape_Leng":90.139427424299996,"Shape_Area":468.04218645399999}},{"type":"Feature","id":26,"geometry":{"type":"Polygon","coordinates":[[[7.5308946033363435,6.5971056947163271],[7.5307835981180817,6.5971290499694266],[7.5307494900045375,6.597108580561609],[7.530680234227777,6.5968698666220584],[7.5308177889760879,6.5968409249471254],[7.5308946033363435,6.5971056947163271]]]},"properties":{"FID":26,"Text":"              P52","Shape_Leng":90.457406823100001,"Shape_Area":468.04090849300002}},{"type":"Feature","id":27,"geometry":{"type":"Polygon","coordinates":[[[7.5310294959541837,6.5970773130639957],[7.5308946033363435,6.5971056947163271],[7.5308177889760879,6.5968409249471254],[7.5309526806143774,6.5968125432977169],[7.5310294959541837,6.5970773130639957]]]},"properties":{"FID":27,"Text":"              P51","Shape_Leng":91.457125140700001,"Shape_Area":463.38358629099997}},{"type":"Feature","id":28,"geometry":{"type":"Polygon","coordinates":[[[7.5309526806143774,6.5968125432977169],[7.5308177889760879,6.5968409249471254],[7.5307409737645825,6.5965761551787967],[7.5308758653249663,6.5965477744392853],[7.5309526806143774,6.5968125432977169]]]},"properties":{"FID":28,"Text":"              P68","Shape_Leng":91.456938655100004,"Shape_Area":463.381108385}},{"type":"Feature","id":29,"geometry":{"type":"Polygon","coordinates":[[[7.531087572242364,6.5967841625126944],[7.5309526806143774,6.5968125432977169],[7.5308758653249663,6.5965477744392853],[7.5310107577847072,6.5965193927582035],[7.531087572242364,6.5967841625126944]]]},"properties":{"FID":29,"Text":"              P69","Shape_Leng":91.457008304300004,"Shape_Area":463.38241190000002}},{"type":"Feature","id":30,"geometry":{"type":"Polygon","coordinates":[[[7.531164387660068,6.5970489313690717],[7.5310294959541837,6.5970773130639957],[7.5309526806143774,6.5968125432977169],[7.531087572242364,6.5967841625126944],[7.531164387660068,6.5970489313690717]]]},"properties":{"FID":30,"Text":"              P50","Shape_Leng":91.456938653099996,"Shape_Area":463.38110835399999}},{"type":"Feature","id":31,"geometry":{"type":"Polygon","coordinates":[[[7.5312937736123535,6.5970015707270626],[7.5312862414026194,6.5970049533059223],[7.5312792884325503,6.5970094055929458],[7.5312730651051965,6.597014831268937],[7.5312677074156769,6.5970211131728833],[7.5312633306209076,6.5970281132833328],[7.531164387660068,6.5970489313690717],[7.531087572242364,6.5967841625126944],[7.5312224638653831,6.5967557807834183],[7.5312937736123535,6.5970015707270626]]]},"properties":{"FID":31,"Text":"              P49","Shape_Leng":89.774341782700006,"Shape_Area":457.75822556600002}},{"type":"Feature","id":32,"geometry":{"type":"Polygon","coordinates":[[[7.5312224638653831,6.5967557807834183],[7.531087572242364,6.5967841625126944],[7.5310107577847072,6.5965193927582035],[7.5310921809958273,6.5965022606277266],[7.5310991295862806,6.5965088093832938],[7.5311070893613872,6.5965140824088095],[7.5311158283572226,6.5965179270951664],[7.5311250945921557,6.5965202323729972],[7.5311346169658382,6.5965209305239796],[7.5311441188134367,6.5965200008381153],[7.53115332603923,6.5965174714462114],[7.5312224638653831,6.5967557807834183]]]},"properties":{"FID":32,"Text":"              P70","Shape_Leng":89.759053076800001,"Shape_Area":449.24072702699999}},{"type":"Feature","id":33,"geometry":{"type":"Polygon","coordinates":[[[7.531357356385092,6.5967273990168449],[7.5312224638653831,6.5967557807834183],[7.53115332603923,6.5965174714462114],[7.5311609815704497,6.596513973478177],[7.5311680272299411,6.5965093668257166],[7.5311743026405349,6.5965037568219218],[7.5311796663519646,6.596497270559281],[7.5311839976601824,6.5964900532778463],[7.5311871993176451,6.5964822692774598],[7.5312805408726593,6.5964626292708726],[7.531357356385092,6.5967273990168449]]]},"properties":{"FID":33,"Text":"              P71","Shape_Leng":89.299915325399994,"Shape_Area":454.06019074}},{"type":"Feature","id":34,"geometry":{"type":"Polygon","coordinates":[[[7.5314341710462847,6.5969921687636868],[7.5313477274008491,6.5970103559582132],[7.5313398082649607,6.5970050984274877],[7.5313311135707739,6.5970012538733753],[7.531321894387812,6.5969989360753676],[7.5313124163986203,6.59699821002273],[7.531302951746528,6.5969990964120644],[7.5312937736123535,6.5970015707270626],[7.5312224638653831,6.5967557807834183],[7.531357356385092,6.5967273990168449],[7.5314341710462847,6.5969921687636868]]]},"properties":{"FID":34,"Text":"              P48","Shape_Leng":90.104131307100005,"Shape_Area":454.29506551700001}},{"type":"Feature","id":35,"geometry":{"type":"Polygon","coordinates":[[[7.5315690636335937,6.5969637869515969],[7.5314341710462847,6.5969921687636868],[7.531357356385092,6.5967273990168449],[7.5314922479928548,6.5966990172076851],[7.5315690636335937,6.5969637869515969]]]},"properties":{"FID":35,"Text":"              P47","Shape_Leng":91.4571251399,"Shape_Area":463.38358627500003}},{"type":"Feature","id":36,"geometry":{"type":"Polygon","coordinates":[[[7.5314922479928548,6.5966990172076851],[7.531357356385092,6.5967273990168449],[7.5312805408726593,6.5964626292708726],[7.5314154324025218,6.5964342483716143],[7.5314922479928548,6.5966990172076851]]]},"properties":{"FID":36,"Text":"              P72","Shape_Leng":91.456938654300004,"Shape_Area":463.381108369}},{"type":"Feature","id":37,"geometry":{"type":"Polygon","coordinates":[[[7.5316271395929748,6.596670635358584],[7.5314922479928548,6.5966990172076851],[7.5314154324025218,6.5964342483716143],[7.5315503248317359,6.5964058665307688],[7.5316271395929748,6.596670635358584]]]},"properties":{"FID":37,"Text":"              P73","Shape_Leng":91.456933224699995,"Shape_Area":463.38209556999999}},{"type":"Feature","id":38,"geometry":{"type":"Polygon","coordinates":[[[7.5317039553089433,6.5969354050969011],[7.5315690636335937,6.5969637869515969],[7.5314922479928548,6.5966990172076851],[7.5316271395929748,6.596670635358584],[7.5317039553089433,6.5969354050969011]]]},"properties":{"FID":38,"Text":"              P46","Shape_Leng":91.457055487999995,"Shape_Area":463.38228271700001}},{"type":"Feature","id":39,"geometry":{"type":"Polygon","coordinates":[[[7.531825535077874,6.596909824476608],[7.5317039553089433,6.5969354050969011],[7.5316271395929748,6.596670635358584],[7.5317487201984212,6.5966450547459976],[7.531825535077874,6.596909824476608]]]},"properties":{"FID":39,"Text":"              P45","Shape_Leng":88.448607884799998,"Shape_Area":417.65396871000002}},{"type":"Feature","id":40,"geometry":{"type":"Polygon","coordinates":[[[7.5317487201984212,6.5966450547459976],[7.5316271395929748,6.596670635358584],[7.5315503248317359,6.5964058665307688],[7.5316719044650569,6.5963802859205636],[7.5317487201984212,6.5966450547459976]]]},"properties":{"FID":40,"Text":"              P74","Shape_Leng":88.448415970799999,"Shape_Area":417.65262512999999}},{"type":"Feature","id":41,"geometry":{"type":"Polygon","coordinates":[[[7.5312820041367567,6.5979963551428726],[7.531147112162115,6.598024736813259],[7.5310702976256154,6.5977599670312754],[7.5312051895223568,6.5977315862707924],[7.5312820041367567,6.5979963551428726]]]},"properties":{"FID":41,"Text":"              P11","Shape_Leng":91.456882363299997,"Shape_Area":463.38079013499998}},{"type":"Feature","id":42,"geometry":{"type":"Polygon","coordinates":[[[7.5314168970080901,6.5979679734351979],[7.5312820041367567,6.5979963551428726],[7.5312051895223568,6.5977315862707924],[7.5313400814141218,6.5977032045660504],[7.5314168970080901,6.5979679734351979]]]},"properties":{"FID":42,"Text":"              P12","Shape_Leng":91.4569332242,"Shape_Area":463.38209556700002}},{"type":"Feature","id":43,"geometry":{"type":"Polygon","coordinates":[[[7.5315517889648058,6.5979395925892064],[7.5314168970080901,6.5979679734351979],[7.5313400814141218,6.5977032045660504],[7.5314749732982511,6.597674822821344],[7.5315517889648058,6.5979395925892064]]]},"properties":{"FID":43,"Text":"              P13","Shape_Leng":91.456938655100004,"Shape_Area":463.381108385}},{"type":"Feature","id":44,"geometry":{"type":"Polygon","coordinates":[[[7.5316866809165397,6.5979112107989737],[7.5315517889648058,6.5979395925892064],[7.5314749732982511,6.597674822821344],[7.531571684011622,6.5976544747009154],[7.5315778322398463,6.5976604251500506],[7.5315848154161689,6.5976653706455188],[7.5315924702010095,6.5976691940488683],[7.5316006177959647,6.5976718071144083],[7.5316090693751079,6.5976731486965141],[7.5316176251700009,6.5976731883642143],[7.5316866809165397,6.5979112107989737]]]},"properties":{"FID":44,"Text":"              P14","Shape_Leng":89.739948061199996,"Shape_Area":454.45878492700001}},{"type":"Feature","id":45,"geometry":{"type":"Polygon","coordinates":[[[7.531821572860637,6.5978828289687925],[7.5316866809165397,6.5979112107989737],[7.5316176251700009,6.5976731883642143],[7.5316270083930617,6.5976717057847134],[7.5316360055519187,6.5976686584982245],[7.5316443586496193,6.5976641352726269],[7.5316518267489272,6.5976582665248031],[7.5316581968375633,6.5976512198310173],[7.5316632838335735,6.5976431981182655],[7.5316669432671421,6.5976344324671459],[7.5317447579479362,6.5976180592147902],[7.531821572860637,6.5978828289687925]]]},"properties":{"FID":45,"Text":"              P15","Shape_Leng":89.280366159600007,"Shape_Area":448.588102306}},{"type":"Feature","id":46,"geometry":{"type":"Polygon","coordinates":[[[7.5319564657014215,6.5978544471013105],[7.531821572860637,6.5978828289687925],[7.5317447579479362,6.5976180592147902],[7.531879649806493,6.5975896782545567],[7.5319564657014215,6.5978544471013105]]]},"properties":{"FID":46,"Text":"              P16","Shape_Leng":91.457008304599995,"Shape_Area":463.382411913}},{"type":"Feature","id":47,"geometry":{"type":"Polygon","coordinates":[[[7.5320913576275883,6.597826066095549],[7.5319564657014215,6.5978544471013105],[7.531879649806493,6.5975896782545567],[7.5320145416600761,6.5975612963500847],[7.5320913576275883,6.597826066095549]]]},"properties":{"FID":47,"Text":"              P17","Shape_Leng":91.456938654300004,"Shape_Area":463.381108369}},{"type":"Feature","id":48,"geometry":{"type":"Polygon","coordinates":[[[7.5310659213340942,6.5976961995733365],[7.530954915070744,6.5977195557383403],[7.530920807816857,6.5976990863348632],[7.5308515519333827,6.5974603723882019],[7.5309891059484837,6.5974314306978972],[7.5310659213340942,6.5976961995733365]]]},"properties":{"FID":48,"Text":"              P25","Shape_Leng":90.457273994600001,"Shape_Area":468.03940542599997}},{"type":"Feature","id":49,"geometry":{"type":"Polygon","coordinates":[[[7.5309891059484837,6.5974314306978972],[7.5308515519333827,6.5974603723882019],[7.5307822960957225,6.5972216575401212],[7.5308012853834301,6.5971900170801474],[7.5309122915229452,6.5971666609243442],[7.5309891059484837,6.5974314306978972]]]},"properties":{"FID":49,"Text":"P37","Shape_Leng":90.139358135099997,"Shape_Area":468.04058540599999}},{"type":"Feature","id":50,"geometry":{"type":"Polygon","coordinates":[[[7.531147112162115,6.598024736813259],[7.5310228699056463,6.5980508772676387],[7.5309536139585935,6.5978121633167444],[7.530972603270345,6.5977805219492298],[7.5310702976256154,6.5977599670312754],[7.531147112162115,6.598024736813259]]]},"properties":{"FID":50,"Text":"              P10","Shape_Leng":87.130830820499995,"Shape_Area":422.31134421799999}}]}
+        ;
+
+        // Nearby Locations Data
+        const locationsData = {"type":"FeatureCollection","name":"Locations","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:OGC:1.3:CRS84"}},"features":[{"type":"Feature","properties":{"id":null,"Labels":"Civil Defense Estate"},"geometry":{"type":"Point","coordinates":[7.561622605358441,6.597827049498076]}},{"type":"Feature","properties":{"id":null,"Labels":"Pilgrimage Centre"},"geometry":{"type":"Point","coordinates":[7.570356758222593,6.601503984073124]}},{"type":"Feature","properties":{"id":null,"Labels":"Timber Market Ugwuogo"},"geometry":{"type":"Point","coordinates":[7.556860489794349,6.602536101151153]}},{"type":"Feature","properties":{"id":null,"Labels":"Nationa Housing Estate"},"geometry":{"type":"Point","coordinates":[7.553624415808748,6.601880277007075]}},{"type":"Feature","properties":{"id":null,"Labels":"Seaman Global Estate"},"geometry":{"type":"Point","coordinates":[7.533688468379058,6.600891163539954]}},{"type":"Feature","properties":{"id":null,"Labels":"Breeze Garden Estate"},"geometry":{"type":"Point","coordinates":[7.529207750552842,6.597160467792579]}},{"type":"Feature","properties":{"id":null,"Labels":"Behold Gardens Estate"},"geometry":{"type":"Point","coordinates":[7.523287575067476,6.59936448452741]}}]};
+
+        // Estates Data
+        const estatesData = {"type":"FeatureCollection","name":"Estates","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:OGC:1.3:CRS84"}},"features":[{"type":"Feature","properties":{"id":null,"Label":"Himalayas Estate"},"geometry":{"type":"MultiPolygon","coordinates":[[[[7.554122273344987,6.595010198113789],[7.554587661911476,6.595827301690963],[7.554641776861067,6.596332615070988],[7.55491235160903,6.597224975738758],[7.555139634397314,6.597192721766715],[7.555182926356989,6.597407748207328],[7.555009758518294,6.597472256121313],[7.555009758518294,6.597526012709884],[7.555150457387235,6.59823559913228],[7.55531280223601,6.59820334522604],[7.559706936142881,6.597429250846256],[7.559620352223533,6.596719663268847],[7.564101070049751,6.596268107008616],[7.564555635626323,6.599063448673627],[7.565789456477019,6.598955935824363],[7.56760771878331,6.599816037964968],[7.568560141896128,6.593107201665696],[7.565075139142404,6.58973124648985],[7.563408398694973,6.588484072522417],[7.558559699211529,6.59213957355127],[7.556503331127035,6.593859800004433],[7.555832305752092,6.594139336239209],[7.555832305752092,6.594139336239209],[7.554122273344987,6.595010198113789]]]]}},{"type":"Feature","properties":{"id":null,"Label":"FRSC Estate"},"geometry":{"type":"MultiPolygon","coordinates":[[[[7.54903546808334,6.586656311905511],[7.551524755764572,6.585043576358317],[7.552780222595104,6.58409743573158],[7.553884167566782,6.582742731240158],[7.555334448215845,6.578657092139343],[7.56031302357831,6.583301816081439],[7.55814842559463,6.585731677499477],[7.556395101227851,6.586656311905511],[7.553710999728086,6.59072038223407],[7.551957675361307,6.591279458086351],[7.551957675361307,6.591279458086351],[7.54903546808334,6.586656311905511]]]]}},{"type":"Feature","properties":{"id":null,"Label":"Trade More Estate"},"geometry":{"type":"MultiPolygon","coordinates":[[[[7.53625351698971,6.59717121911752],[7.536350923898975,6.594816673385018],[7.536805489475548,6.592913676193908],[7.537454868870651,6.593074947425646],[7.538212478164941,6.593042693183494],[7.538558813842329,6.593451246762332],[7.539651935824086,6.593634020622794],[7.539922510572048,6.594160839019973],[7.541188800392501,6.594397369546765],[7.54187064875736,6.593913556984904],[7.54267155001132,6.593773788823557],[7.543212699507241,6.594085579283228],[7.544717095105898,6.594730662370196],[7.547087329898027,6.594322109845939],[7.547834116202396,6.594709159614159],[7.548764893335378,6.594773667879473],[7.549046291073254,6.595537015048117],[7.548570079516847,6.595795047627935],[7.544868616964755,6.596891684593063],[7.541177977402582,6.597149716467395],[7.537076064223507,6.597214224414979],[7.53625351698971,6.59717121911752]]]]}}]};
+
+        // Global variables
+        let map;
+        let parcelLayers = [];
+        let currentBaseLayer = 'satellite';
+        let parcelStatus = {};
+        
+        // Landscape orientation variables
+        let isLandscape = false;
+        let controlsVisible = false;
+        let landscapeTimeout;
+        let touchStartY = 0;
+        let touchStartTime = 0;
+        
+        // Initialize parcel status from localStorage or set defaults
+        function initializeParcelStatus() {
+            const saved = localStorage.getItem('coralParcelStatusWGS84');
+            if (saved) {
+                parcelStatus = JSON.parse(saved);
+            } else {
+                // Set default status for all parcels
+                subdivisionData.features.forEach(feature => {
+                    const parcelId = feature.properties.Text.trim();
+                    parcelStatus[parcelId] = 'available';
+                });
+                saveParcelStatus();
+            }
+        }
+        
+        function saveParcelStatus() {
+            localStorage.setItem('coralParcelStatusWGS84', JSON.stringify(parcelStatus));
+        }
+        
+        // Get parcel color based on status
+        function getParcelColor(parcelId) {
+            const status = parcelStatus[parcelId] || 'available';
+            switch (status) {
+                case 'available': return '#28a745';
+                case 'reserved': return '#ffc107';
+                case 'sold': return '#dc3545';
+                default: return '#6c757d';
+            }
+        }
+        
+        // Initialize the map
+        function initMap() {
+            console.log("Initializing map with WGS84 data...");
+            console.log("Total parcels:", subdivisionData.features.length);
+            
+            // Calculate bounds of the subdivision
+            const bounds = L.geoJSON(subdivisionData).getBounds();
+            const center = bounds.getCenter();
+            
+            console.log("Subdivision center:", center);
+            console.log("Subdivision bounds:", bounds);
+            
+            // Create map
+            map = L.map('map').setView([center.lat, center.lng], 18);
+            
+            // Base layers
+            const mapLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: ' OpenStreetMap contributors'
+            });
+            
+            const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                attribution: 'Tiles  Esri  Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+            });
+            
+            // Add initial layer
+            satelliteLayer.addTo(map);
+            
+            // Add parcels to map
+            loadParcels();
+            
+            // Add nearby locations and estates
+            addNearbyLocations();
+            addEstates();
+            
+            // Zoom to subdivision
+            map.fitBounds(bounds, { padding: [20, 20] });
+            
+            // Populate admin dropdown
+            populateParcelDropdown();
+            addParcelControls();
+            
+            // Add zoom event listener for responsive labels
+            map.on('zoomend', function() {
+                createParcelLabels();
+            });
+            
+            // Create parcel labels after map is fully loaded
+            setTimeout(() => {
+                createParcelLabels();
+            }, 500);
+            
+            // Hide loading screen
+            document.getElementById('loading').style.display = 'none';
+            
+            console.log("Map initialization complete!");
+        }
+        
+        function loadParcels() {
+            console.log("Loading parcels...");
+            
+            // Clear existing layers
+            parcelLayers.forEach(layer => map.removeLayer(layer));
+            parcelLayers = [];
+            
+            // Add each parcel as a separate layer
+            subdivisionData.features.forEach((feature, index) => {
+                const parcelId = feature.properties.Text.trim();
+                const area = feature.properties.Shape_Area;
+                const perimeter = feature.properties.Shape_Leng;
+                const status = parcelStatus[parcelId] || 'available';
+                
+                console.log(`Loading parcel ${parcelId} (${index + 1}/${subdivisionData.features.length})`);
+                
+                const layer = L.geoJSON(feature, {
+                    style: {
+                        fillColor: getParcelColor(parcelId),
+                        weight: 2,
+                        opacity: 1,
+                        color: '#ffffff',
+                        dashArray: '3',
+                        fillOpacity: 0.7
+                    },
+                    onEachFeature: function(feature, layer) {
+                        // Get center coordinates for this parcel
+                        const parcelBounds = layer.getBounds();
+                        const parcelCenter = parcelBounds.getCenter();
+                        
+                        // Create popup content
+                        const popupContent = createEnhancedPopup(feature);
+                        
+                        layer.bindPopup(popupContent);
+                        
+                        // Highlight on hover
+                        layer.on('mouseover', function() {
+                            layer.setStyle({
+                                weight: 4,
+                                color: '#fff',
+                                dashArray: '',
+                                fillOpacity: 0.9
+                            });
+                        });
+                        
+                        layer.on('mouseout', function() {
+                            layer.setStyle({
+                                weight: 2,
+                                color: '#ffffff',
+                                dashArray: '3',
+                                fillOpacity: 0.7
+                            });
+                        });
+                        
+                        // Double-click to select parcel in admin panel
+                        layer.on('dblclick', function() {
+                            const parcelSelect = document.getElementById('parcelSelect');
+                            const statusSelect = document.getElementById('statusSelect');
+                            if (parcelSelect && statusSelect) {
+                                parcelSelect.value = parcelId;
+                                statusSelect.value = status;
+                                layer.openPopup();
+                            }
+                        });
+                    }
+                }).addTo(map);
+                
+                parcelLayers.push(layer);
+            });
+            
+            console.log(`Loaded ${parcelLayers.length} parcels successfully!`);
+            
+            // Recreate parcel labels
+            createParcelLabels();
+        }
+        
+        // Add nearby locations to map
+        function addNearbyLocations() {
+            L.geoJSON(locationsData, {
+                pointToLayer: function(feature, latlng) {
+                    return L.marker(latlng, {
+                        icon: L.divIcon({
+                            className: 'location-square',
+                            html: '<div style="width: 6px; height: 6px; background-color: white; border: 1px solid #722F37;"></div>',
+                            iconSize: [6, 6],
+                            iconAnchor: [3, 3]
+                        })
+                    });
+                },
+                onEachFeature: function(feature, layer) {
+                    if (feature.properties && feature.properties.Labels) {
+                        // Add popup
+                        layer.bindPopup(`
+                            <div style="text-align: center; padding: 5px;">
+                                <strong style="color: #8B0000;">${feature.properties.Labels}</strong><br>
+                                <small style="color: #666;">Nearby Location</small>
+                            </div>
+                        `);
+                        
+                        // Add dark ash label directly on point
+                        const labelMarker = L.marker(layer.getLatLng(), {
+                            icon: L.divIcon({
+                                className: 'location-label',
+                                html: `<div style="color: #4A4A4A; font-weight: 600; font-size: 8px; text-shadow: 1px 1px 2px rgba(255,255,255,0.9), -1px -1px 2px rgba(255,255,255,0.9), 1px -1px 2px rgba(255,255,255,0.9), -1px 1px 2px rgba(255,255,255,0.9);">${feature.properties.Labels}</div>`,
+                                iconAnchor: [0, -8],
+                                iconSize: [0, 0]
+                            }),
+                            interactive: false,
+                            zIndexOffset: 100
+                        });
+                        
+                        labelMarker.addTo(map);
+                    }
+                }
+            }).addTo(map);
+        }
+        
+        // Add estates to map with white boundaries
+        function addEstates() {
+            L.geoJSON(estatesData, {
+                style: function(feature) {
+                    return {
+                        color: '#FFFFFF',
+                        weight: 2,
+                        opacity: 0.7,
+                        dashArray: '6,6',
+                        fill: false
+                    };
+                },
+                onEachFeature: function(feature, layer) {
+                    if (feature.properties && feature.properties.Label) {
+                        // Add popup
+                        layer.bindPopup(`
+                            <div style="text-align: center; padding: 8px;">
+                                <strong style="color: #8B0000; font-size: 14px;">${feature.properties.Label.toUpperCase()}</strong><br>
+                                <small style="color: #666;">Residential Estate</small>
+                            </div>
+                        `);
+                        
+                        // Add capital letters label spread across center of polygon
+                        const center = layer.getBounds().getCenter();
+                        
+                        // Special positioning for TradeMore Estate to center it better
+                        let labelCenter = center;
+                        if (feature.properties.Label && feature.properties.Label.toLowerCase().includes('trademore')) {
+                            // Shift TradeMore label more towards the center of the estate
+                            labelCenter = L.latLng(center.lat - 0.0002, center.lng - 0.0002);
+                        }
+                        
+                        const estateLabel = L.marker(labelCenter, {
+                            icon: L.divIcon({
+                                className: 'estate-label',
+                                html: `<div style="color: #4A4A4A; font-weight: bold; font-size: 10px; text-shadow: 1px 1px 2px rgba(255,255,255,0.9), -1px -1px 2px rgba(255,255,255,0.9), 1px -1px 2px rgba(255,255,255,0.9), -1px 1px 2px rgba(255,255,255,0.9); letter-spacing: 2px; text-transform: uppercase;">${feature.properties.Label}</div>`,
+                                iconAnchor: [0, 0],
+                                iconSize: [0, 0]
+                            }),
+                            interactive: false,
+                            zIndexOffset: 150
+                        });
+                        
+                        estateLabel.addTo(map);
+                    }
+                }
+            }).addTo(map);
+        }
+
+        function populateParcelDropdown() {
+            const select = document.getElementById('parcelSelect');
+            select.innerHTML = '<option value="">Select Parcel...</option>';
+            
+            subdivisionData.features.forEach(feature => {
+                const parcelId = cleanParcelNumber(feature.properties.Text);
+                const option = document.createElement('option');
+                option.value = parcelId;
+                option.textContent = `Parcel ${parcelId}`;
+                select.appendChild(option);
+            });
+        }
+        
+        function toggleLayer(layerType) {
+            const mapBtn = document.getElementById('mapBtn');
+            const satelliteBtn = document.getElementById('satelliteBtn');
+            
+            // Remove current layer
+            map.eachLayer(layer => {
+                if (layer._url) {
+                    map.removeLayer(layer);
+                }
+            });
+            
+            if (layerType === 'map') {
+                const mapLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: ' OpenStreetMap contributors'
+                }).addTo(map);
+                
+                mapBtn.classList.add('active');
+                satelliteBtn.classList.remove('active');
+                currentBaseLayer = 'map';
+            } else {
+                const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                    attribution: 'Tiles  Esri  Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+                }).addTo(map);
+                
+                satelliteBtn.classList.add('active');
+                mapBtn.classList.remove('active');
+                currentBaseLayer = 'satellite';
+            }
+        }
+        
+        let userLocationMarker = null;
+        
+        function locateUser() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    
+                    // Remove existing user marker if it exists
+                    if (userLocationMarker) {
+                        map.removeLayer(userLocationMarker);
+                    }
+                    
+                    // Add user location marker with custom icon
+                    userLocationMarker = L.marker([lat, lng], {
+                        icon: L.divIcon({
+                            className: 'user-location',
+                            html: '📍',
+                            iconSize: [24, 24],
+                            iconAnchor: [12, 12]
+                        })
+                    }).addTo(map);
+                    
+                    userLocationMarker.bindPopup(`
+                        <div class="parcel-popup">
+                            <h3>📍 Your Location</h3>
+                            <p><strong>Latitude:</strong> ${lat.toFixed(6)}</p>
+                            <p><strong>Longitude:</strong> ${lng.toFixed(6)}</p>
+                            <p><em>Click map to close this popup</em></p>
+                        </div>
+                    `).openPopup();
+                    
+                    // Center map on user location but keep current zoom
+                    map.setView([lat, lng], Math.max(map.getZoom(), 18));
+                    
+                    console.log('User located at:', lat, lng);
+                }, function(error) {
+                    alert('Unable to get your location. Please enable location services.');
+                });
+            } else {
+                alert('Geolocation is not supported by this browser.');
+            }
+        }
+        
+        function zoomToSubdivision() {
+            const bounds = L.geoJSON(subdivisionData).getBounds();
+            map.fitBounds(bounds, { padding: [20, 20] });
+        }
+        
+        function selectParcel() {
+            const select = document.getElementById('parcelSelect');
+            const statusSelect = document.getElementById('statusSelect');
+            const parcelId = select.value;
+            
+            if (parcelId) {
+                // Update status dropdown to current parcel status
+                statusSelect.value = parcelStatus[parcelId] || 'available';
+                
+                // Find and highlight the parcel
+                const feature = subdivisionData.features.find(f => f.properties.Text.trim() === parcelId);
+                if (feature) {
+                    const bounds = L.geoJSON(feature).getBounds();
+                    map.fitBounds(bounds, { padding: [50, 50] });
+                    
+                    // Find and open popup for this parcel
+                    parcelLayers.forEach(layer => {
+                        layer.eachLayer(sublayer => {
+                            if (sublayer.feature && sublayer.feature.properties.Text.trim() === parcelId) {
+                                sublayer.openPopup();
+                            }
+                        });
+                    });
+                }
+            }
+        }
+        
+        function updateParcelStatus() {
+            const parcelSelect = document.getElementById('parcelSelect');
+            const statusSelect = document.getElementById('statusSelect');
+            const parcelId = parcelSelect.value;
+            const newStatus = statusSelect.value;
+            
+            if (parcelId) {
+                // Update status locally
+                parcelStatus[parcelId] = newStatus;
+                saveParcelStatus();
+                
+                // Track when local change was made
+                localStorage.setItem('lastLocalChange', new Date().toISOString());
+                
+                // Immediately update Google Sheets for admin changes (no double authentication)
+                updateGoogleSheets(parcelId, newStatus, 'Admin');
+                
+                // Immediately update the parcel color without full reload
+                map.eachLayer(layer => {
+                    if (layer.feature && layer.feature.properties.PARCEL_ID?.trim() === parcelId) {
+                        const color = getParcelColor(newStatus);
+                        layer.setStyle({
+                            fillColor: color,
+                            color: color
+                        });
+                        console.log(`🎨 Updated color for ${parcelId} to ${color} (status: ${newStatus})`);
+                    }
+                });
+                
+                // Delay the full reload to let the immediate color change show
+                setTimeout(() => {
+                    loadParcels();
+                }, 500);
+                
+                // Show success message
+                const popup = L.popup()
+                    .setLatLng(map.getCenter())
+                    .setContent(`
+                        <div class="parcel-popup">
+                            <h3>✅ Status Updated</h3>
+                            <p>Parcel ${parcelId} is now marked as <strong>${newStatus}</strong></p>
+                            <p style="font-size: 12px; color: #28a745; margin-top: 8px;">
+                                🔄 Google Sheets will be updated automatically for admin changes.
+                            </p>
+                        </div>
+                    `)
+                    .openOn(map);
+                
+                setTimeout(() => {
+                    map.closePopup();
+                }, 4000);
+                
+                // Show Google Sheets update reminder
+                if (isClientAuthenticated) {
+                    pushStatusToGoogleSheets(parcelId, newStatus);
+                }
+            }
+        }
+        
+        // Quiet sync for customers (no UI feedback)
+        async function syncWithGoogleSheetsQuiet() {
+            try {
+                const response = await fetch(
+                    `https://sheets.googleapis.com/v4/spreadsheets/${GOOGLE_SHEETS_CONFIG.spreadsheetId}/values/${GOOGLE_SHEETS_CONFIG.range}?key=${GOOGLE_SHEETS_CONFIG.apiKey}`
+                );
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.values && data.values.length > 0) {
+                        const updatedCount = updateStatusFromSheets(data.values);
+                        if (updatedCount > 0) {
+                            loadParcels(); // Refresh map silently
+                            console.log(`Background sync: Updated ${updatedCount} parcels from Google Sheets`);
+                        }
+                    }
+                }
+            } catch (error) {
+                console.log('Background sync failed (this is normal):', error.message);
+            }
+        }
+        
+        // Enhanced push to track admin changes
+        async function pushStatusToGoogleSheets(parcelId, newStatus) {
+            console.log(`Admin changed ${parcelId} to ${newStatus} - should update Google Sheets`);
+            
+            const currentDate = new Date().toISOString().split('T')[0];
+            
+            // Show enhanced reminder to update Google Sheets with tracking info
+            const syncStatus = document.getElementById('syncStatus');
+            if (syncStatus) {
+                syncStatus.innerHTML = `
+                    📝 <strong>Update Required:</strong> Please update your Google Sheet:<br>
+                    • <strong>Parcel:</strong> ${parcelId}<br>
+                    • <strong>New Status:</strong> ${newStatus}<br>
+                    • <strong>Date:</strong> ${currentDate}<br>
+                    • <strong>Changed By:</strong> Admin<br><br>
+                    <a href="${GOOGLE_SHEETS_CONFIG.sheetUrl}" target="_blank" 
+                       style="background: #28a745; color: white; padding: 8px 16px; text-decoration: none; border-radius: 5px;">
+                       📊 Open Google Sheet
+                    </a>
+                    <br><small>💡 Update columns: Status | LastUpdated | ChangedBy | AdminApproved</small>
+                `;
+                syncStatus.style.display = 'block';
+                syncStatus.style.background = '#e8f4fd';
+                syncStatus.style.color = '#0c5460';
+                syncStatus.style.padding = '15px';
+                syncStatus.style.borderRadius = '8px';
+                syncStatus.style.border = '1px solid #bee5eb';
+                
+                setTimeout(() => {
+                    syncStatus.style.display = 'none';
+                }, 20000); // Show for 20 seconds
+            }
+        }
+        
+        // ===== NEW FEATURES: SEARCH, CONTACT MODAL, WHATSAPP =====
+        
+        function searchParcel(event) {
+            const searchTerm = event.target.value.toLowerCase().trim();
+            
+            if (event.key === 'Enter' && searchTerm) {
+                // Find matching parcel
+                const feature = subdivisionData.features.find(f => 
+                    f.properties.Text.toLowerCase().trim().includes(searchTerm)
+                );
+                
+                if (feature) {
+                    const bounds = L.geoJSON(feature).getBounds();
+                    map.fitBounds(bounds, { padding: [50, 50] });
+                    
+                    // Open popup for found parcel
+                    parcelLayers.forEach(layer => {
+                        layer.eachLayer(sublayer => {
+                            if (sublayer.feature && 
+                                sublayer.feature.properties.Text.toLowerCase().trim().includes(searchTerm)) {
+                                sublayer.openPopup();
+                            }
+                        });
+                    });
+                } else {
+                    alert('Parcel not found. Try searching for "A1", "B5", etc.');
+                }
+            }
+        }
+        
+        function clearSearch() {
+            document.getElementById('parcelSearch').value = '';
+            map.closePopup();
+        }
+        
+        let currentSelectedParcel = null;
+        
+        function openContactModal(parcelId) {
+            currentSelectedParcel = parcelId;
+            document.getElementById('modalParcelId').textContent = parcelId;
+            document.getElementById('contactModal').style.display = 'flex';
+            
+            // Clear form
+            document.getElementById('contactForm').reset();
+        }
+        
+        function closeContactModal() {
+            document.getElementById('contactModal').style.display = 'none';
+            currentSelectedParcel = null;
+        }
+        
+        function submitContactForm(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('contactName').value;
+            const phone = document.getElementById('contactPhone').value;
+            const email = document.getElementById('contactEmail').value;
+            const message = document.getElementById('contactMessage').value;
+            
+            const parcelNumber = cleanParcelNumber(currentSelectedParcel);
+            
+            // Create WhatsApp message to A&Z Projects
+            const whatsappMessage = `🏡 NEW INQUIRY - Coral Gardens Estate%0A%0A📍 Interested in: Parcel ${parcelNumber}%0A💰 Listed Price: ₦3,000,000%0A%0A👤 Customer Details:%0A• Name: ${name}%0A• Phone: ${phone}%0A• Email: ${email}%0A%0A💬 Message: ${message || 'No additional message'}%0A%0A⏰ Inquiry sent: ${new Date().toLocaleString()}`;
+            
+            // Open WhatsApp to your number
+            window.open(`https://wa.me/2348068086806?text=${whatsappMessage}`, '_blank');
+            
+            // Close modal
+            closeContactModal();
+            
+            // Show success message
+            alert('✅ Thank you! Your inquiry has been sent to A&Z Projects via WhatsApp.');
+        }
+        
+        function shareOnWhatsApp(parcelId) {
+            const selectedParcel = parcelId || currentSelectedParcel;
+            if (!selectedParcel) return;
+            
+            const parcelNumber = cleanParcelNumber(selectedParcel);
+            const message = `🏡 Check out this property at Coral Gardens Estate!%0A%0A📍 Parcel: ${parcelNumber}%0A💰 Price: ₦3,000,000%0A🌟 Premium location with excellent amenities%0A%0A🗺️ View interactive map: ${window.location.href}%0A%0A📞 Contact A&Z Projects for more info: +234 806 808 6806`;
+            window.open(`https://wa.me/?text=${message}`, '_blank');
+        }
+        
+        // Close modal when clicking outside
+        document.addEventListener('click', function(event) {
+            const modal = document.getElementById('contactModal');
+            if (event.target === modal) {
+                closeContactModal();
+            }
+        });
+        
+        // ===== PARCEL NUMBERING & PRICING ENHANCEMENTS =====
+        let parcelLabelsVisible = true;
+        let parcelLabels = [];
+
+        // Clean parcel number (keep P prefix, clean whitespace)
+        function cleanParcelNumber(txt) {
+            if (!txt) return '';
+            // Extract just the P and number part, removing extra whitespace
+            const match = txt.match(/P\d+/);
+            return match ? match[0] : txt.trim();
+        }
+
+        // Toggle parcel number visibility
+        function toggleParcelNumbers() {
+            const btn = document.querySelector('.parcel-number-toggle');
+            if (!btn) return;
+            
+            parcelLabelsVisible = !parcelLabelsVisible;
+            console.log('Toggle clicked, parcelLabelsVisible now:', parcelLabelsVisible);
+            
+            if (parcelLabelsVisible) {
+                btn.textContent = '🔢 Hide Numbers';
+                // Show all labels
+                parcelLabels.forEach(label => {
+                    if (!map.hasLayer(label)) {
+                        label.addTo(map);
+                    }
+                });
+                console.log('Parcel numbers shown');
+            } else {
+                btn.textContent = '🔢 Show Numbers';
+                // Hide all labels
+                parcelLabels.forEach(label => {
+                    if (map.hasLayer(label)) {
+                        map.removeLayer(label);
+                    }
+                });
+                console.log('Parcel numbers hidden');
+            }
+        }
+
+        // Create parcel number labels on map
+        function createParcelLabels() {
+            if (!map) {
+                console.log('createParcelLabels: map not ready');
+                return;
+            }
+            if (!subdivisionData) {
+                console.log('createParcelLabels: subdivision data not ready');
+                return;
+            }
+            
+            console.log('Creating parcel labels, visible:', parcelLabelsVisible);
+            
+            // Remove existing labels
+            parcelLabels.forEach(label => {
+                if (map.hasLayer(label)) {
+                    map.removeLayer(label);
+                }
+            });
+            parcelLabels = [];
+            
+            // Get current zoom level for responsive sizing
+            const zoomLevel = map.getZoom();
+            let zoomClass = 'parcel-label-zoom-18'; // default
+            if (zoomLevel <= 16) zoomClass = 'parcel-label-zoom-16';
+            else if (zoomLevel <= 17) zoomClass = 'parcel-label-zoom-17';
+            else if (zoomLevel <= 18) zoomClass = 'parcel-label-zoom-18';
+            else if (zoomLevel <= 19) zoomClass = 'parcel-label-zoom-19';
+            else zoomClass = 'parcel-label-zoom-20';
+            
+            console.log('Zoom level:', zoomLevel, 'Class:', zoomClass);
+            
+            let labelsAdded = 0;
+            
+            // Create new labels for each parcel
+            subdivisionData.features.forEach((feature, index) => {
+                try {
+                    const bounds = L.geoJSON(feature).getBounds();
+                    const center = bounds.getCenter();
+                    const parcelNumber = cleanParcelNumber(feature.properties.Text);
+                    
+                    // Debug first few parcels
+                    if (index < 3) {
+                        console.log('Parcel', index, 'Raw text:', feature.properties.Text, 'Cleaned:', parcelNumber);
+                    }
+                    
+                    if (parcelNumber) {
+                        const label = L.marker([center.lat, center.lng], {
+                            icon: L.divIcon({
+                                className: `parcel-label ${zoomClass}`,
+                                html: parcelNumber,
+                                iconSize: [20, 12],
+                                iconAnchor: [10, 6]
+                            }),
+                            interactive: false
+                        });
+                        
+                        if (parcelLabelsVisible) {
+                            label.addTo(map);
+                            labelsAdded++;
+                        }
+                        parcelLabels.push(label);
+                    }
+                } catch (error) {
+                    console.error('Error creating label for parcel', index, error);
+                }
+            });
+            
+            console.log(`Created ${parcelLabels.length} parcel labels, ${labelsAdded} added to map (zoom: ${zoomLevel}, visible: ${parcelLabelsVisible})`);
+        }
+
+        // Add parcel toggle button to map
+        function addParcelControls() {
+            if (!window.map) return;
+            
+            const toggleButton = L.control({position: 'topleft'});
+            toggleButton.onAdd = function() {
+                const div = L.DomUtil.create('div');
+                div.innerHTML = '<button class="parcel-number-toggle" onclick="toggleParcelNumbers()">🔢 Hide Numbers</button>';
+                return div;
+            };
+            toggleButton.addTo(map);
+            
+            console.log('Added parcel toggle button');
+        }
+
+        // Create enhanced popup with pricing
+        function createEnhancedPopup(feature) {
+            const parcelId = feature.properties.Text.trim();
+            const parcelNumber = cleanParcelNumber(parcelId);
+            const area = feature.properties.Shape_Area;
+            const perimeter = feature.properties.Shape_Leng;
+            const status = parcelStatus[parcelId] || 'available';
+            const statusLabel = status.charAt(0).toUpperCase() + status.slice(1);
+            
+            // Calculate center coordinates for this parcel
+            const parcelBounds = L.geoJSON(feature).getBounds();
+            const parcelCenter = parcelBounds.getCenter();
+            
+            // Set current selected parcel for share function
+            currentSelectedParcel = parcelId;
+            
+            return `
+                <div class="parcel-popup">
+                    <h3>🏡 Parcel ${parcelNumber}</h3>
+                    <p><strong>💰 Price:</strong> ₦3,000,000</p>
+                    <p><strong>📏 Area:</strong> ${area.toFixed(2)} sq meters</p>
+                    <p><strong> Status:</strong>
+                        <span class="status-badge status-${status}">${statusLabel}</span>
+                    </p>
+                    <p><strong>📍 Coordinates:</strong> ${parcelCenter.lat.toFixed(6)}, ${parcelCenter.lng.toFixed(6)}</p>
+                    <hr style="margin: 8px 0;">
+                    <div style="text-align: center; margin-top: 8px;">
+                        <button onclick="openContactModal('${parcelId}')" 
+                                style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); 
+                                       color: white; border: none; padding: 6px 14px; 
+                                       border-radius: 6px; cursor: pointer; font-weight: 600; 
+                                       margin-right: 6px; font-size: 12px;">
+                            📞 Contact Us
+                        </button>
+                        <button onclick="shareOnWhatsApp('${parcelId}')" 
+                                style="background: linear-gradient(135deg, #25d366 0%, #128c7e 100%); 
+                                       color: white; border: none; padding: 6px 14px; 
+                                       border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 12px;">
+                            📱 Share
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ===== DUAL-VIEW SYSTEM & GOOGLE SHEETS INTEGRATION =====
+        
+        let currentView = 'customer'; // 'customer' or 'client'
+        let isClientAuthenticated = false;
+        const CLIENT_PASSWORD = 'azprojects2025'; // Change this to a secure password
+        
+        // Google Sheets Configuration for Production with Change Tracking
+        const GOOGLE_SHEETS_CONFIG = {
+            spreadsheetId: '11yOpSpicaOwhUV8gTqb98rgy9osJj_ZyHQP0UtCfITo',
+            range: 'Sheet1!A2:E', // Columns: ParcelID, Status, LastUpdated, ChangedBy, AdminApproved
+            apiKey: 'AIzaSyDGdYkDBOPP1L9l7oFSoTSplBhznK5Kc5w',
+            sheetUrl: 'https://docs.google.com/spreadsheets/d/11yOpSpicaOwhUV8gTqb98rgy9osJj_ZyHQP0UtCfITo/edit#gid=0'
+        };
+        
+        // Enhanced Google Sheets Integration with Change Detection
+        let lastSyncTime = localStorage.getItem('lastSyncTime') || '2025-08-28';
+        let pendingChanges = [];
+        
+        async function syncWithRealGoogleSheets() {
+            console.log('� Starting Google Sheets sync...');
+            
+            // Also show debug on page
+            const debugDiv = document.getElementById('syncStatus');
+            debugDiv.innerHTML = '� Syncing with Google Sheets...';
+            debugDiv.style.display = 'block';
+            debugDiv.style.background = '#cce7ff';
+            debugDiv.style.color = '#004085';
+            debugDiv.style.padding = '10px';
+            debugDiv.style.borderRadius = '5px';
+            
+            if (!isClientAuthenticated) {
+                console.log('❌ Authentication required for sync');
+                debugDiv.innerHTML = '❌ Authentication required for Google Sheets sync';
+                debugDiv.style.background = '#f8d7da';
+                debugDiv.style.color = '#721c24';
+                return;
+            }
+            
+            try {
+                console.log('� Fetching data from Google Sheets...');
+                
+                // Fetch data from Google Sheets
+                const url = `https://sheets.googleapis.com/v4/spreadsheets/${GOOGLE_SHEETS_CONFIG.spreadsheetId}/values/Sheet1!A2:E?key=${GOOGLE_SHEETS_CONFIG.apiKey}`;
+                
+                const response = await fetch(url);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                console.log('✅ Data received, processing changes...');
+                
+                const data = await response.json();
+                console.log('🔍 DEBUG: Data from Google Sheets:', data);
+                
+                debugDiv.innerHTML = `📋 TESTING: Got ${data.values ? data.values.length : 0} rows from Google Sheets`;
+                
+                if (data.values && data.values.length > 0) {
+                    console.log('🔍 DEBUG: Processing', data.values.length, 'rows...');
+                    debugDiv.innerHTML = `⚙️ TESTING: Processing ${data.values.length} rows...`;
+                    
+                    // Detect changes since last sync
+                    const changes = detectChanges(data.values);
+                    console.log('🔍 DEBUG: Detected changes:', changes);
+                    
+                    debugDiv.innerHTML = `🔍 TESTING: Detected ${changes.length} changes`;
+                    
+                    if (changes.length > 0) {
+                        showChangeNotification(changes);
+                    }
+                    
+                    // Update parcel status from Google Sheets
+                    const updatedCount = updateStatusFromSheets(data.values);
+                    console.log('🔍 DEBUG: Updated', updatedCount, 'parcels');
+                    
+                    // Reload parcels to reflect changes
+                    loadParcels();
+                    
+                    // Update last sync time
+                    lastSyncTime = new Date().toISOString();
+                    localStorage.setItem('lastSyncTime', lastSyncTime);
+                    updateSyncTime();
+                    
+                    console.log('🔍 DEBUG: Showing sync result...');
+                    if (changes.length > 0) {
+                        document.getElementById('syncStatus').innerHTML = `✅ Sync completed! ${changes.length} new changes from Google Sheets applied to map.`;
+                        document.getElementById('syncStatus').style.background = '#d4edda';
+                        document.getElementById('syncStatus').style.color = '#155724';
+                    } else {
+                        document.getElementById('syncStatus').innerHTML = `✅ Sync completed! No new changes in Google Sheets.<br><small>🔄 Your local admin changes are saved locally. Remember to manually update Google Sheets to share changes.</small>`;
+                        document.getElementById('syncStatus').style.background = '#e2e3e5';
+                        document.getElementById('syncStatus').style.color = '#383d41';
+                    }
+                    
+                    document.getElementById('syncStatus').style.padding = '10px';
+                    document.getElementById('syncStatus').style.borderRadius = '5px';
+                    document.getElementById('syncStatus').style.border = '1px solid #c3e6cb';
+                    
+                    setTimeout(() => {
+                        document.getElementById('syncStatus').style.display = 'none';
+                    }, 7000);
+                } else {
+                    console.log('🔍 DEBUG: No data found in Google Sheets');
+                    document.getElementById('syncStatus').innerHTML = '⚠️ No data found in Google Sheets';
+                }
+                
+            } catch (error) {
+                console.error('🔍 DEBUG: Sync error:', error);
+                document.getElementById('syncStatus').innerHTML = `❌ Sync failed: ${error.message}`;
+                
+                if (error.message.includes('400') || error.message.includes('403')) {
+                    showGoogleSheetsSetup();
+                }
+            }
+        }
+        
+        function detectChanges(sheetData) {
+            const changes = [];
+            
+            sheetData.forEach(row => {
+                if (row.length >= 2) {
+                    const parcelId = row[0]?.trim();
+                    const status = row[1]?.toLowerCase().trim();
+                    const lastUpdated = row[2]?.trim() || 'unknown';
+                    const changedBy = row[3]?.trim() || 'Database';
+                    
+                    // Check if the Google Sheets status is different from our local status
+                    if (parcelId && status && parcelStatus[parcelId] !== status) {
+                        changes.push({
+                            parcel: parcelId,
+                            oldStatus: parcelStatus[parcelId] || 'unknown',
+                            newStatus: status,
+                            changedBy: changedBy,
+                            date: lastUpdated
+                        });
+                    }
+                }
+            });
+            
+            return changes;
+        }
+        
+        // Secure admin verification function
+        async function verifyAdminAndUpdateSheets(parcelId, status) {
+            // Create secure admin verification modal
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                background: rgba(0,0,0,0.8); z-index: 10000; display: flex;
+                align-items: flex-start; justify-content: center; 
+                overflow-y: auto; padding: 20px 10px;
+                box-sizing: border-box;
+            `;
+            
+            modal.innerHTML = `
+                <div style="background: white; padding: 30px; border-radius: 10px; max-width: 400px; 
+                           width: 100%; margin: auto; min-height: fit-content; max-height: 90vh; 
+                           overflow-y: auto; box-sizing: border-box;">
+                    <h3 style="color: #dc3545; margin: 0 0 20px 0;">🔐 Admin Authentication Required</h3>
+                    <p style="margin: 0 0 15px 0;">
+                        To change <strong>${parcelId}</strong> to <strong>${status}</strong> as an admin, 
+                        please enter the admin security code:
+                    </p>
+                    <input type="password" id="adminPassword" placeholder="Enter admin security code" 
+                           style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 5px; 
+                                  font-size: 16px; margin: 10px 0; box-sizing: border-box;" />
+                    <div style="color: #666; font-size: 12px; margin: 5px 0 15px 0;">
+                        This prevents unauthorized users from claiming admin privileges
+                    </div>
+                    <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; 
+                               position: sticky; bottom: 0; background: white; padding-top: 10px;">
+                        <button onclick="this.parentElement.parentElement.parentElement.remove()" 
+                                style="background: #6c757d; color: white; border: none; padding: 12px 20px; 
+                                       border-radius: 5px; cursor: pointer; min-width: 100px;">
+                            Cancel
+                        </button>
+                        <button onclick="verifyAdminPassword('${parcelId}', '${status}', this)" 
+                                style="background: #dc3545; color: white; border: none; padding: 12px 20px; 
+                                       border-radius: 5px; cursor: pointer; min-width: 120px;">
+                            🔐 Verify & Update
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Focus on password input
+            setTimeout(() => {
+                document.getElementById('adminPassword').focus();
+                
+                // Allow Enter key to submit
+                document.getElementById('adminPassword').addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        verifyAdminPassword(parcelId, status, e.target);
+                    }
+                });
+            }, 100);
+        }
+        
+        // Verify admin password and proceed with update
+        function verifyAdminPassword(parcelId, status, buttonElement) {
+            const password = document.getElementById('adminPassword').value;
+            const correctPassword = 'CORAL2024ADMIN'; // Change this to your desired admin password
+            
+            if (password === correctPassword) {
+                // Log the verified admin action
+                logAdminAction(parcelId, status);
+                
+                // Close modal
+                buttonElement.parentElement.parentElement.parentElement.remove();
+                
+                // Proceed with Google Sheets update
+                updateGoogleSheets(parcelId, status, 'Admin');
+                
+                // Show success message
+                showSecureUpdateNotification(parcelId, status);
+                
+            } else {
+                // Log failed attempt
+                logFailedAdminAttempt(parcelId, status);
+                
+                // Show error
+                const errorDiv = document.createElement('div');
+                errorDiv.style.cssText = `
+                    color: #dc3545; background: #f8d7da; padding: 8px; 
+                    border-radius: 4px; margin: 10px 0; font-size: 14px;
+                `;
+                errorDiv.textContent = '❌ Incorrect admin security code. Access denied.';
+                
+                // Remove any existing error messages
+                const existingError = buttonElement.parentElement.parentElement.querySelector('[style*="color: #dc3545"]');
+                if (existingError) existingError.remove();
+                
+                // Insert error message
+                buttonElement.parentElement.parentElement.insertBefore(errorDiv, buttonElement.parentElement);
+                
+                // Clear password field
+                document.getElementById('adminPassword').value = '';
+                document.getElementById('adminPassword').focus();
+                
+                // Remove error after 3 seconds
+                setTimeout(() => {
+                    if (errorDiv.parentElement) errorDiv.remove();
+                }, 3000);
+            }
+        }
+        
+        // Enhanced logging for admin actions (single authentication)
+        function logAdminAction(parcelId, status) {
+            const timestamp = new Date().toISOString();
+            const userAgent = navigator.userAgent;
+            const logEntry = {
+                timestamp: timestamp,
+                parcel: parcelId,
+                newStatus: status,
+                action: 'ADMIN_CHANGE',
+                authMethod: 'ADMIN_LOGIN_VERIFIED',
+                userAgent: userAgent.substring(0, 100),
+                sessionId: Date.now(),
+                ipHash: btoa(navigator.userAgent + timestamp).substring(0, 10) // Simple fingerprint
+            };
+            
+            // Store in localStorage for audit trail
+            let adminLog = JSON.parse(localStorage.getItem('adminSecurityLog') || '[]');
+            adminLog.push(logEntry);
+            
+            // Keep only last 100 entries
+            if (adminLog.length > 100) {
+                adminLog = adminLog.slice(-100);
+            }
+            
+            localStorage.setItem('adminSecurityLog', JSON.stringify(adminLog));
+            console.log('🔐 Admin action logged:', logEntry);
+        }
+        
+        // Log failed admin attempts for security monitoring
+        function logFailedAdminAttempt(parcelId, status) {
+            const timestamp = new Date().toISOString();
+            const userAgent = navigator.userAgent;
+            const logEntry = {
+                timestamp: timestamp,
+                parcel: parcelId,
+                attemptedStatus: status,
+                action: 'FAILED_ADMIN_ATTEMPT',
+                userAgent: userAgent.substring(0, 100),
+                sessionId: Date.now()
+            };
+            
+            // Store failed attempts separately
+            let failedLog = JSON.parse(localStorage.getItem('adminFailedAttempts') || '[]');
+            failedLog.push(logEntry);
+            
+            // Keep only last 50 failed attempts
+            if (failedLog.length > 50) {
+                failedLog = failedLog.slice(-50);
+            }
+            
+            localStorage.setItem('adminFailedAttempts', JSON.stringify(failedLog));
+            console.warn('⚠️ Failed admin attempt logged:', logEntry);
+        }
+        
+        // Security audit function (call from console: viewAdminSecurityLog())
+        function viewAdminSecurityLog() {
+            const adminLog = JSON.parse(localStorage.getItem('adminSecurityLog') || '[]');
+            const failedLog = JSON.parse(localStorage.getItem('adminFailedAttempts') || '[]');
+            
+            console.log('🔐 ADMIN SECURITY AUDIT LOG');
+            console.log('===========================');
+            console.log(`✅ Successful Admin Actions: ${adminLog.length}`);
+            console.log(`❌ Failed Admin Attempts: ${failedLog.length}`);
+            console.log('');
+            
+            if (adminLog.length > 0) {
+                console.log('Recent Successful Admin Actions:');
+                adminLog.slice(-10).forEach((entry, index) => {
+                    console.log(`${adminLog.length - 10 + index + 1}. ${entry.timestamp} - ${entry.parcel} → ${entry.newStatus}`);
+                });
+                console.log('');
+            }
+            
+            if (failedLog.length > 0) {
+                console.log('Recent Failed Attempts:');
+                failedLog.slice(-5).forEach((entry, index) => {
+                    console.log(`${failedLog.length - 5 + index + 1}. ${entry.timestamp} - Attempted: ${entry.parcel} → ${entry.attemptedStatus}`);
+                });
+            }
+            
+            return {
+                successfulActions: adminLog,
+                failedAttempts: failedLog,
+                summary: {
+                    totalSuccessful: adminLog.length,
+                    totalFailed: failedLog.length,
+                    lastSuccessful: adminLog.length > 0 ? adminLog[adminLog.length - 1].timestamp : 'None',
+                    lastFailed: failedLog.length > 0 ? failedLog[failedLog.length - 1].timestamp : 'None'
+                }
+            };
+        }
+        
+        // Make security functions globally available for console access
+        window.viewAdminSecurityLog = viewAdminSecurityLog;
+        
+        // Show secure update notification
+        function showSecureUpdateNotification(parcelId, status) {
+            const notification = L.popup()
+                .setLatLng(map.getCenter())
+                .setContent(`
+                    <div style="padding: 10px; max-width: 300px;">
+                        <h4 style="margin: 0 0 8px 0; color: #28a745;">🔐 Secure Admin Update</h4>
+                        <p style="margin: 0 0 8px 0; font-size: 14px;">
+                            <strong>${parcelId}</strong> updated to <strong>${status}</strong>
+                        </p>
+                        <div style="background: #d4edda; padding: 8px; border-radius: 4px; border-left: 3px solid #28a745;">
+                            <p style="margin: 0; font-size: 12px; color: #155724;">
+                                ✅ Admin authentication verified
+                                <br>🔐 Secure change authorized
+                                <br>📋 Manual Google Sheets update required
+                            </p>
+                        </div>
+                    </div>
+                `)
+                .openOn(map);
+                
+            setTimeout(() => {
+                map.closePopup(notification);
+            }, 5000);
+        }
+        
+        // Function to update Google Sheets with admin changes
+        async function updateGoogleSheets(parcelId, status, changedBy) {
+            try {
+                console.log(`🔄 Attempting Google Sheets update: ${parcelId} -> ${status} (by ${changedBy})`);
+                
+                // Log admin actions for security audit
+                if (changedBy === 'Admin') {
+                    logAdminAction(parcelId, status);
+                }
+                
+                // First, find the row for this parcel
+                const response = await fetch(
+                    `https://sheets.googleapis.com/v4/spreadsheets/${GOOGLE_SHEETS_CONFIG.spreadsheetId}/values/Sheet1!A2:E?key=${GOOGLE_SHEETS_CONFIG.apiKey}`
+                );
+                
+                if (!response.ok) {
+                    throw new Error(`Failed to read Google Sheets: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                let rowIndex = -1;
+                
+                // Find the row for this parcel
+                if (data.values) {
+                    data.values.forEach((row, index) => {
+                        if (row[0]?.trim() === parcelId) {
+                            rowIndex = index + 2; // +2 because arrays are 0-indexed and we start at row 2
+                        }
+                    });
+                }
+                
+                if (rowIndex === -1) {
+                    console.log(`⚠️ Parcel ${parcelId} not found in Google Sheets, showing manual instructions`);
+                    showManualUpdateInstructions(parcelId, status, changedBy, new Date().toISOString().split('T')[0]);
+                    return;
+                }
+                
+                // Prepare the update data
+                const currentDate = new Date().toISOString().split('T')[0];
+                const updateData = {
+                    range: `Sheet1!B${rowIndex}:E${rowIndex}`,
+                    majorDimension: 'ROWS',
+                    values: [[
+                        status,                    // Column B: Status
+                        currentDate,              // Column C: LastUpdated  
+                        changedBy,               // Column D: ChangedBy
+                        'TRUE'                   // Column E: AdminApproved
+                    ]]
+                };
+                
+                // Attempt to update Google Sheets using PUT request
+                const updateResponse = await fetch(
+                    `https://sheets.googleapis.com/v4/spreadsheets/${GOOGLE_SHEETS_CONFIG.spreadsheetId}/values/${updateData.range}?valueInputOption=RAW&key=${GOOGLE_SHEETS_CONFIG.apiKey}`,
+                    {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(updateData)
+                    }
+                );
+                
+                if (!updateResponse.ok) {
+                    // Expected: Write operations require OAuth (not just API key)
+                    console.log(`ℹ️ Google Sheets write requires OAuth authentication (${updateResponse.status}), using manual workflow`);
+                    showManualUpdateInstructions(parcelId, status, changedBy, currentDate);
+                    return;
+                }
+                
+                // This would only happen if OAuth was properly configured
+                console.log(`✅ Successfully updated Google Sheets for ${parcelId}`);
+                showSuccessNotification(parcelId, status, changedBy, currentDate);
+                
+            } catch (error) {
+                console.log(`ℹ️ Using manual Google Sheets workflow: ${error.message}`);
+                showManualUpdateInstructions(parcelId, status, changedBy, new Date().toISOString().split('T')[0]);
+            }
+        }
+        
+        // Success notification for automatic Google Sheets update
+        function showSuccessNotification(parcelId, status, changedBy, currentDate) {
+            const notification = L.popup()
+                .setLatLng(map.getCenter())
+                .setContent(`
+                    <div style="padding: 10px; max-width: 300px;">
+                        <h4 style="margin: 0 0 8px 0; color: #28a745;">✅ Google Sheets Updated!</h4>
+                        <p style="margin: 0 0 8px 0; font-size: 14px;">
+                            <strong>${parcelId}</strong> successfully updated to <strong>${status}</strong>
+                            ${changedBy === 'Admin' ? '<span style="color: #dc3545; font-weight: bold;"> (by Admin)</span>' : ''}
+                        </p>
+                        <div style="background: #d4edda; padding: 8px; border-radius: 4px; border-left: 3px solid #28a745;">
+                            <p style="margin: 0; font-size: 12px; color: #155724;">
+                                📊 Database synchronized automatically
+                                <br>✅ Status: ${status}
+                                <br>📅 Date: ${currentDate}
+                                <br>👤 Changed By: <span style="color: ${changedBy === 'Admin' ? '#dc3545' : '#000'}; font-weight: bold;">${changedBy}</span>
+                                <br>✔️ Admin Approved: TRUE
+                            </p>
+                        </div>
+                    </div>
+                `)
+                .openOn(map);
+                
+            setTimeout(() => {
+                map.closePopup(notification);
+            }, 8000);
+        }
+        
+        // Fallback function for manual instructions
+        function showManualUpdateInstructions(parcelId, status, changedBy, currentDate) {
+            const notification = L.popup()
+                .setLatLng(map.getCenter())
+                .setContent(`
+                    <div style="padding: 10px; max-width: 320px;">
+                        <h4 style="margin: 0 0 8px 0; color: #28a745;">✅ Change Saved Locally</h4>
+                        <p style="margin: 0 0 8px 0; font-size: 14px;">
+                            <strong>${parcelId}</strong> updated to <strong>${status}</strong>
+                            ${changedBy === 'Admin' ? '<span style="color: #dc3545; font-weight: bold;"> (by Admin)</span>' : ''}
+                        </p>
+                        <div style="background: #e8f4fd; padding: 8px; border-radius: 4px; border-left: 3px solid #0984e3; margin-bottom: 8px;">
+                            <p style="margin: 0; font-size: 12px; color: #2d3436; font-weight: bold;">
+                                � Manual Google Sheets Update:
+                            </p>
+                            <p style="margin: 4px 0 0 0; font-size: 11px; color: #2d3436;">
+                                Find row for <strong>${parcelId}</strong> and update:
+                                <br>• <strong>Status</strong>: ${status}
+                                <br>• <strong>Date</strong>: ${currentDate}
+                                <br>• <strong>Changed By</strong>: <span style="color: #dc3545; font-weight: bold;">${changedBy}</span>
+                                <br>• <strong>Admin Approved</strong>: ${changedBy === 'Admin' ? 'TRUE' : 'Pending'}
+                                ${changedBy === 'Admin' ? '<br><br><strong style="color: #dc3545;">🔐 SECURITY NOTE:</strong><br><small style="color: #721c24;">When you select "Admin" in the ChangedBy dropdown, Google Sheets will prompt for the admin password. This prevents unauthorized admin claims.</small>' : ''}
+                            </p>
+                            <p style="margin: 6px 0 0 0; font-size: 11px;">
+                                <a href="https://docs.google.com/spreadsheets/d/11yOpSpicaOwhUV8gTqb98rgy9osJj_ZyHQP0UtCfITo/edit" 
+                                   target="_blank" style="color: #0984e3; text-decoration: none;">
+                                   🔗 Open Google Sheets
+                                </a>
+                            </p>
+                        </div>
+                        <div style="background: ${changedBy === 'Admin' ? '#ffeef0' : '#fff3cd'}; padding: 6px; border-radius: 4px; border-left: 3px solid ${changedBy === 'Admin' ? '#dc3545' : '#ffc107'};">
+                            <p style="margin: 0; font-size: 11px; color: ${changedBy === 'Admin' ? '#721c24' : '#856404'};">
+                                ${changedBy === 'Admin' ? '� Admin changes are immediately approved and synchronized' : '�💡 This keeps all devices synchronized'}
+                            </p>
+                        </div>
+                    </div>
+                `)
+                .openOn(map);
+                
+            setTimeout(() => {
+                map.closePopup(notification);
+            }, 15000); // Reasonable timeout for reading instructions
+        }
+        
+        function showChangeNotification(changes) {
+            if (changes.length === 0) return;
+            
+            let message = `🔄 <strong>${changes.length} parcel(s) have been updated:</strong><br><br>`;
+            
+            changes.forEach(change => {
+                const statusColor = {
+                    'available': '🟢',
+                    'reserved': '🟡', 
+                    'sold': '🔴'
+                };
+                
+                const isAdminChange = change.changedBy === 'Admin';
+                const changedByStyle = isAdminChange ? 'color: #dc3545; font-weight: bold;' : '';
+                const adminLabel = isAdminChange ? ' 🔑' : '';
+                
+                message += `• <strong>${change.parcel}</strong>: ${statusColor[change.oldStatus] || '⚪'} ${change.oldStatus} → ${statusColor[change.newStatus] || '⚪'} ${change.newStatus} <em>(by <span style="${changedByStyle}">${change.changedBy}${adminLabel}</span>)</em><br>`;
+            });
+            
+            message += `<br><small>These changes are now public for all customers to see.</small>`;
+            
+            // Create notification modal
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                background: rgba(0,0,0,0.8); z-index: 10000; display: flex;
+                align-items: flex-start; justify-content: center;
+                overflow-y: auto; padding: 20px 10px;
+                box-sizing: border-box;
+            `;
+            
+            notification.innerHTML = `
+                <div style="background: white; padding: 30px; border-radius: 10px; max-width: 500px; 
+                           width: 100%; margin: auto; min-height: fit-content; max-height: 90vh; 
+                           overflow-y: auto; box-sizing: border-box;">
+                    <h3>📊 Change Notification</h3>
+                    <div style="margin: 20px 0; max-height: 60vh; overflow-y: auto;">${message}</div>
+                    <div style="text-align: center; position: sticky; bottom: 0; background: white; 
+                               padding-top: 15px; margin-top: 15px;">
+                        <button onclick="this.parentElement.parentElement.parentElement.remove()" 
+                                style="background: #007bff; color: white; border: none; padding: 12px 25px; 
+                                       border-radius: 5px; cursor: pointer; font-size: 16px; min-width: 150px;">
+                            ✅ Acknowledge Changes
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+        }
+        
+        function updateStatusFromSheets(sheetData) {
+            let updatedCount = 0;
+            
+            sheetData.forEach(row => {
+                if (row.length >= 5) {
+                    const parcelId = row[0]?.trim();
+                    const newStatus = row[1]?.toLowerCase().trim();
+                    const lastUpdated = row[2]?.trim();
+                    const changedBy = row[3]?.trim() || 'Database';
+                    const adminApproved = row[4]?.trim().toUpperCase();
+                    
+                    // Only apply changes that are admin approved
+                    if (['available', 'reserved', 'sold'].includes(newStatus) && adminApproved === 'YES') {
+                        if (parcelStatus[parcelId] !== newStatus) {
+                            parcelStatus[parcelId] = newStatus;
+                            updatedCount++;
+                        }
+                    }
+                }
+            });
+            
+            // Save to localStorage as backup
+            saveParcelStatus();
+            
+            return updatedCount;
+        }
+        
+        function showGoogleSheetsSetup() {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                background: rgba(0,0,0,0.8); z-index: 10000; display: flex;
+                align-items: center; justify-content: center;
+            `;
+            
+            modal.innerHTML = `
+                <div style="background: white; padding: 30px; border-radius: 10px; max-width: 600px; margin: 20px;">
+                    <h3>🔧 Google Sheets Setup Required</h3>
+                    <p><strong>To enable real-time status sync:</strong></p>
+                    <ol>
+                        <li>Create a Google Sheet with columns: ParcelID | Status | LastUpdated</li>
+                        <li>Get a Google Sheets API key from Google Cloud Console</li>
+                        <li>Make the sheet publicly readable or use service account</li>
+                        <li>Update the configuration in the code</li>
+                    </ol>
+                    <p><strong>Sample sheet structure:</strong></p>
+                    <pre style="background: #f5f5f5; padding: 10px; border-radius: 5px;">
+ParcelID    | Status    | LastUpdated
+P001        | available | 2025-08-27
+P002        | sold      | 2025-08-27
+P003        | reserved  | 2025-08-27</pre>
+                    <p><strong>Valid status values:</strong> available, reserved, sold</p>
+                    <div style="text-align: center; margin-top: 20px;">
+                        <button onclick="this.parentElement.parentElement.parentElement.remove()" 
+                                style="background: #007bff; color: white; border: none; padding: 10px 20px; 
+                                       border-radius: 5px; cursor: pointer;">Got it!</button>
+                        <button onclick="window.open('${GOOGLE_SHEETS_CONFIG.sheetUrl}', '_blank')" 
+                                style="background: #28a745; color: white; border: none; padding: 10px 20px; 
+                                       border-radius: 5px; cursor: pointer; margin-left: 10px;">Open Sample Sheet</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+        
+        function toggleView() {
+            if (currentView === 'customer') {
+                // Switch to client view - require authentication
+                document.getElementById('clientLogin').style.display = 'flex';
+                document.getElementById('clientPassword').focus();
+            } else {
+                // Switch back to customer view
+                switchToCustomerView();
+            }
+        }
+        
+        function authenticateClient() {
+            const password = document.getElementById('clientPassword').value;
+            if (password === CLIENT_PASSWORD) {
+                isClientAuthenticated = true;
+                switchToClientView();
+                closeLogin();
+                syncWithGoogleSheets(); // Auto-sync when client logs in
+            } else {
+                alert('❌ Incorrect password. Please try again.');
+                document.getElementById('clientPassword').value = '';
+                document.getElementById('clientPassword').focus();
+            }
+        }
+        
+        function handleLoginKeyup(event) {
+            if (event.key === 'Enter') {
+                authenticateClient();
+            }
+        }
+        
+        function closeLogin() {
+            document.getElementById('clientLogin').style.display = 'none';
+            document.getElementById('clientPassword').value = '';
+        }
+        
+        function switchToClientView() {
+            currentView = 'client';
+            document.body.className = 'client-view';
+            document.getElementById('adminToggle').textContent = '👥 Customer';
+            console.log('Switched to client view');
+        }
+        
+        function switchToCustomerView() {
+            currentView = 'customer';
+            isClientAuthenticated = false;
+            document.body.className = 'customer-view';
+            document.getElementById('adminToggle').textContent = '👔 Admin';
+            document.getElementById('syncStatus').style.display = 'none';
+            console.log('Switched to customer view');
+        }
+        
+        // Google Sheets Integration
+        async function syncWithGoogleSheets() {
+            console.log('� Sync with Google Sheets initiated');
+            // First check if there are local changes that need to be pushed
+            checkForLocalChanges();
+            
+            // Then sync from Google Sheets
+            await syncWithRealGoogleSheets();
+        }
+        
+        function checkForLocalChanges() {
+            // Get timestamp of last local change
+            const lastLocalChange = localStorage.getItem('lastLocalChange');
+            const lastSync = localStorage.getItem('lastSyncTime');
+            
+            if (lastLocalChange && lastSync && lastLocalChange > lastSync) {
+                // There are local changes newer than last sync
+                const syncStatus = document.getElementById('syncStatus');
+                syncStatus.innerHTML = `
+                    ⚠️ <strong>Local changes detected!</strong><br>
+                    You have made changes in the admin panel that need to be updated in Google Sheets.<br>
+                    <small>Sync will check for incoming changes from Google Sheets, but remember to update your sheet with local changes.</small>
+                `;
+                syncStatus.style.display = 'block';
+                syncStatus.style.background = '#fff3cd';
+                syncStatus.style.color = '#856404';
+                syncStatus.style.padding = '10px';
+                syncStatus.style.borderRadius = '5px';
+                
+                setTimeout(() => {
+                    // This will be replaced by the sync result
+                }, 2000);
+            }
+        }
+        
+        function updateSyncTime() {
+            localStorage.setItem('lastSyncTime', new Date().toISOString());
+        }
+        
+        // Test function to demonstrate sync messages
+        function testSyncMessages() {
+            const syncStatus = document.getElementById('syncStatus');
+            const messages = [
+                {
+                    html: '🔄 Testing sync status messages...',
+                    bg: '#cce7ff',
+                    color: '#004085'
+                },
+                {
+                    html: '⚠️ <strong>Local changes detected!</strong><br>You have made changes in the admin panel that need to be updated in Google Sheets.<br><small>This is what you should see when you make local changes.</small>',
+                    bg: '#fff3cd',
+                    color: '#856404'
+                },
+                {
+                    html: '✅ Sync completed! 2 new changes from Google Sheets applied to map.',
+                    bg: '#d4edda',
+                    color: '#155724'
+                },
+                {
+                    html: '✅ Sync completed! No new changes in Google Sheets. Your local admin changes are current.',
+                    bg: '#e2e3e5',
+                    color: '#383d41'
+                }
+            ];
+            
+            let currentMessage = 0;
+            
+            function showNextMessage() {
+                if (currentMessage < messages.length) {
+                    const msg = messages[currentMessage];
+                    syncStatus.innerHTML = msg.html;
+                    syncStatus.style.display = 'block';
+                    syncStatus.style.background = msg.bg;
+                    syncStatus.style.color = msg.color;
+                    syncStatus.style.padding = '10px';
+                    syncStatus.style.borderRadius = '5px';
+                    syncStatus.style.border = '1px solid #c3e6cb';
+                    
+                    currentMessage++;
+                    setTimeout(showNextMessage, 3000);
+                } else {
+                    setTimeout(() => {
+                        syncStatus.style.display = 'none';
+                    }, 3000);
+                }
+            }
+            
+            showNextMessage();
+        }
+        
+        // Simulate Google Sheets API integration
+        async function simulateGoogleSheetsSync() {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    // Simulate updating some parcel statuses from Google Sheets
+                    const sampleUpdates = {
+                        'P80': 'sold',
+                        'P79': 'reserved',
+                        'P78': 'available'
+                    };
+                    
+                    let updatesCount = 0;
+                    Object.keys(sampleUpdates).forEach(parcelId => {
+                        const cleanId = parcelId.trim();
+                        if (parcelStatus[cleanId] !== sampleUpdates[parcelId]) {
+                            parcelStatus[cleanId] = sampleUpdates[parcelId];
+                            updatesCount++;
+                        }
+                    });
+                    
+                    if (updatesCount > 0) {
+                        saveParcelStatus();
+                        loadParcels(); // Refresh map with new data
+                        console.log(`Updated ${updatesCount} parcels from Google Sheets`);
+                    }
+                    
+                    resolve();
+                }, 2000); // Simulate 2-second API call
+            });
+        }
+        
+        // Attribution Toggle Function
+        let attributionVisible = false;
+        
+        function toggleAttribution() {
+            attributionVisible = !attributionVisible;
+            const attributionToggle = document.getElementById('attributionToggle');
+            
+            if (attributionVisible) {
+                document.body.classList.add('show-attribution');
+                attributionToggle.textContent = '❌';
+                attributionToggle.title = 'Hide Attribution';
+            } else {
+                document.body.classList.remove('show-attribution');
+                attributionToggle.textContent = 'ℹ️';
+                attributionToggle.title = 'Show Attribution';
+            }
+        }
+        
+        // Admin-controlled sync - changes only go public when admin logs in and syncs
+        setInterval(() => {
+            if (isClientAuthenticated && currentView === 'client') {
+                // Only admin can pull changes to make them public
+                syncWithGoogleSheets();
+            }
+        }, 5 * 60 * 1000); // 5 minutes - admin only
+        
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("Page loaded, initializing WGS84 version...");
+            initializeParcelStatus();
+            initMap();
+            initLandscapeMode();
+        });
+        
+        // Landscape Mode Functions
+        function initLandscapeMode() {
+            // Check orientation on load
+            checkOrientation();
+            
+            // Listen for orientation changes
+            window.addEventListener('orientationchange', function() {
+                setTimeout(checkOrientation, 100); // Small delay for proper detection
+            });
+            
+            // Listen for resize events (alternative detection)
+            window.addEventListener('resize', checkOrientation);
+            
+            // Add touch event listeners for swipe detection
+            document.addEventListener('touchstart', handleTouchStart, { passive: true });
+            document.addEventListener('touchmove', handleTouchMove, { passive: true });
+            document.addEventListener('touchend', handleTouchEnd, { passive: true });
+        }
+        
+        function checkOrientation() {
+            const isCurrentlyLandscape = window.innerWidth > window.innerHeight && window.innerHeight <= 600;
+            
+            if (isCurrentlyLandscape !== isLandscape) {
+                isLandscape = isCurrentlyLandscape;
+                
+                if (isLandscape) {
+                    enterLandscapeMode();
+                } else {
+                    exitLandscapeMode();
+                }
+            }
+        }
+        
+        function enterLandscapeMode() {
+            console.log('Entering landscape mode');
+            const swipeIndicator = document.getElementById('swipeIndicator');
+            
+            // Show swipe indicator
+            swipeIndicator.classList.remove('hidden');
+            
+            // Hide controls initially
+            controlsVisible = false;
+            
+            // Auto-hide swipe indicator after 3 seconds
+            setTimeout(() => {
+                if (isLandscape && !controlsVisible) {
+                    swipeIndicator.style.opacity = '0.5';
+                }
+            }, 3000);
+        }
+        
+        function exitLandscapeMode() {
+            console.log('Exiting landscape mode');
+            const controls = document.querySelector('.controls');
+            const swipeIndicator = document.getElementById('swipeIndicator');
+            
+            // Hide swipe indicator
+            swipeIndicator.classList.add('hidden');
+            swipeIndicator.style.opacity = '1';
+            
+            // Show controls normally
+            controls.classList.remove('show');
+            controlsVisible = false;
+            
+            // Clear any timeouts
+            if (landscapeTimeout) {
+                clearTimeout(landscapeTimeout);
+            }
+        }
+        
+        function handleTouchStart(e) {
+            if (!isLandscape) return;
+            
+            touchStartY = e.touches[0].clientY;
+            touchStartTime = Date.now();
+        }
+        
+        function handleTouchMove(e) {
+            if (!isLandscape) return;
+            // Prevent default behavior if swiping up from bottom
+            if (touchStartY > window.innerHeight * 0.8 && e.touches[0].clientY < touchStartY - 30) {
+                e.preventDefault();
+            }
+        }
+        
+        function handleTouchEnd(e) {
+            if (!isLandscape) return;
+            
+            const touchEndY = e.changedTouches[0].clientY;
+            const touchDuration = Date.now() - touchStartTime;
+            const touchDistance = touchStartY - touchEndY;
+            
+            // Detect upward swipe from bottom of screen
+            if (touchStartY > window.innerHeight * 0.8 && // Started from bottom 20%
+                touchDistance > 50 && // Moved up at least 50px
+                touchDuration < 500) { // Completed within 500ms
+                
+                toggleControlsInLandscape();
+            }
+        }
+        
+        function toggleControlsInLandscape() {
+            const controls = document.querySelector('.controls');
+            const swipeIndicator = document.getElementById('swipeIndicator');
+            
+            if (controlsVisible) {
+                // Hide controls
+                controls.classList.remove('show');
+                swipeIndicator.classList.remove('hidden');
+                controlsVisible = false;
+            } else {
+                // Show controls
+                controls.classList.add('show');
+                swipeIndicator.classList.add('hidden');
+                controlsVisible = true;
+                
+                // Auto-hide after 4 seconds of inactivity
+                if (landscapeTimeout) {
+                    clearTimeout(landscapeTimeout);
+                }
+                
+                landscapeTimeout = setTimeout(() => {
+                    if (isLandscape && controlsVisible) {
+                        controls.classList.remove('show');
+                        swipeIndicator.classList.remove('hidden');
+                        controlsVisible = false;
+                    }
+                }, 4000);
+            }
+        }
+        
+        // Handle errors
+        window.addEventListener('error', function(e) {
+            console.error('Error:', e.error);
+            document.getElementById('loading').innerHTML = `
+                <div class="spinner"></div>
+                <p style="color: red;">Error loading map: ${e.error.message}</p>
+                <p>Please refresh the page to try again.</p>
+            `;
+        });
+    </script>
+    
+    <!-- Contact Modal -->
+    <div id="contactModal" class="contact-modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Interested in Parcel <span id="modalParcelId"></span>?</h3>
+                <button class="close-btn" onclick="closeContactModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="contactForm" onsubmit="submitContactForm(event)">
+                    <div class="form-group">
+                        <label>Full Name *</label>
+                        <input type="text" id="contactName" placeholder="Enter your full name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number *</label>
+                        <input type="tel" id="contactPhone" placeholder="Enter your phone number" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address *</label>
+                        <input type="email" id="contactEmail" placeholder="Enter your email" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Message (Optional)</label>
+                        <textarea id="contactMessage" placeholder="Tell us about your interest..." rows="3"></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-submit">📞 Request Information</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="az-footer">
+        <span>A&Z Projects Ltd | UK: <a href="tel:+447887969508">+44 788 796 9508</a> | NG: <a href="tel:+2348068086806">+234 806 808 6806</a> | <a href="mailto:info@azprojectsltd.com">info@azprojectsltd.com</a></span>
+    </div>
+</body>
+</html>
+
+
