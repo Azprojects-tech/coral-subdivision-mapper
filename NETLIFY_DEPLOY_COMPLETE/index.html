@@ -1374,9 +1374,7 @@
                             </div>
                         `);
                         
-                        // Road labels temporarily disabled
-                        /*
-                        // Add road label along the line
+                        // Add road label along the line with smaller font size
                         const coordinates = feature.geometry.coordinates;
                         let labelPoint, rotation = 0;
                         
@@ -1391,37 +1389,77 @@
                                 const end = coordinates[Math.min(coordinates.length - 1, midIndex + 1)];
                                 const dx = end[0] - start[0];
                                 const dy = end[1] - start[1];
-                                rotation = Math.atan2(dx, dy) * 180 / Math.PI;
+                                // Fix rotation calculation - swap dx and dy for proper alignment
+                                rotation = Math.atan2(dy, dx) * 180 / Math.PI;
+                                // Add 45 degree adjustment for better road alignment
+                                rotation += 45;
+                                // Fine-tune with 3 degrees clockwise
+                                rotation += 3;
+                                // Additional 5 degrees clockwise adjustment
+                                rotation += 5;
+                                // Another 5 degrees clockwise adjustment
+                                rotation += 5;
+                                // Final 3 degrees clockwise for perfect alignment
+                                rotation += 3;
                                 
                                 // Ensure text is always readable (not upside down)
                                 if (rotation > 90 || rotation < -90) {
                                     rotation += 180;
                                 }
                             }
+                        } else if (feature.geometry.type === 'MultiLineString') {
+                            // Handle MultiLineString - use first LineString
+                            const firstLine = coordinates[0];
+                            const midIndex = Math.floor(firstLine.length / 2);
+                            labelPoint = L.latLng(firstLine[midIndex][1], firstLine[midIndex][0]);
+                            
+                            // Calculate rotation angle
+                            if (firstLine.length > 1) {
+                                const start = firstLine[Math.max(0, midIndex - 1)];
+                                const end = firstLine[Math.min(firstLine.length - 1, midIndex + 1)];
+                                const dx = end[0] - start[0];
+                                const dy = end[1] - start[1];
+                                // Fix rotation calculation - swap dx and dy for proper alignment
+                                rotation = Math.atan2(dy, dx) * 180 / Math.PI;
+                                // Add 45 degree adjustment for better road alignment
+                                rotation += 45;
+                                // Fine-tune with 3 degrees clockwise
+                                rotation += 3;
+                                // Additional 5 degrees clockwise adjustment
+                                rotation += 5;
+                                // Another 5 degrees clockwise adjustment
+                                rotation += 5;
+                                // Final 3 degrees clockwise for perfect alignment
+                                rotation += 3;
+                                
+                                if (rotation > 90 || rotation < -90) {
+                                    rotation += 180;
+                                }
+                            }
                         } else {
-                            // Fallback to bounds center for non-LineString geometries
+                            // Fallback to bounds center for other geometries
                             const bounds = layer.getBounds();
                             labelPoint = bounds.getCenter();
                         }
                         
-                        // Create road label positioned directly on the road and rotated to follow road direction
+                        // Create road label with smaller font size
                         const roadLabel = L.marker(labelPoint, {
                             icon: L.divIcon({
                                 className: 'road-label',
                                 html: `<div style="
                                     color: #2C3E50; 
                                     font-weight: bold; 
-                                    font-size: 11px; 
-                                    text-shadow: 1px 1px 3px rgba(255,255,255,0.9), -1px -1px 3px rgba(255,255,255,0.9), 1px -1px 3px rgba(255,255,255,0.9), -1px 1px 3px rgba(255,255,255,0.9);
+                                    font-size: 9px; 
+                                    text-shadow: 1px 1px 2px rgba(255,255,255,0.9), -1px -1px 2px rgba(255,255,255,0.9), 1px -1px 2px rgba(255,255,255,0.9), -1px 1px 2px rgba(255,255,255,0.9);
                                     text-transform: uppercase;
-                                    letter-spacing: 0.5px;
+                                    letter-spacing: 0.3px;
                                     white-space: nowrap;
                                     font-family: Arial, sans-serif;
                                     transform: rotate(${rotation}deg);
                                     transform-origin: center center;
                                     pointer-events: none;
                                 ">${feature.properties.Name_2}</div>`,
-                                iconAnchor: [0, 0], // No offset - position directly on the road
+                                iconAnchor: [0, 0],
                                 iconSize: [0, 0]
                             }),
                             interactive: false,
@@ -1429,7 +1467,6 @@
                         });
                         
                         roadLabel.addTo(map);
-                        */
                     }
                 }
             }).addTo(map);
@@ -1452,9 +1489,9 @@
             const mapBtn = document.getElementById('mapBtn');
             const satelliteBtn = document.getElementById('satelliteBtn');
             
-            // Remove current layer
+            // Remove only tile layers, preserve GeoJSON layers
             map.eachLayer(layer => {
-                if (layer._url) {
+                if (layer._url && (layer._url.includes('openstreetmap') || layer._url.includes('arcgisonline'))) {
                     map.removeLayer(layer);
                 }
             });
